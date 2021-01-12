@@ -22,9 +22,8 @@
 //
 //-----------------------------------------------------------------------------
 
-static const char
+static const char __attribute__((unused))
 rcsid[] = "$Id: i_main.c,v 1.4 1997/02/03 22:45:10 b1 Exp $";
-
 
 
 #include "doomdef.h"

@@ -22,8 +22,7 @@
 //
 //-----------------------------------------------------------------------------
 
-
-static const char
+static const char __attribute__((unused))
 rcsid[] = "$Id: r_bsp.c,v 1.4 1997/02/03 22:45:12 b1 Exp $";
 
 

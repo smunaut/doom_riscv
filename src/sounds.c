@@ -23,8 +23,7 @@
 //
 //-----------------------------------------------------------------------------
 
-
-static const char 
+static const char __attribute__((unused)) 
 rcsid[] = "$Id: sounds.c,v 1.3 1997/01/29 22:40:44 b1 Exp $";
 
 

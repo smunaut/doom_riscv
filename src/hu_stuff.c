@@ -21,8 +21,9 @@
 //
 //-----------------------------------------------------------------------------
 
-static const char
+static const char __attribute__((unused))
 rcsid[] = "$Id: hu_stuff.c,v 1.4 1997/02/03 16:47:52 b1 Exp $";
+
 
 #include <ctype.h>
 
