@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -253,7 +253,7 @@ static fixed_t	m_h;
 
 // based on level size
 static fixed_t 	min_x;
-static fixed_t	min_y; 
+static fixed_t	min_y;
 static fixed_t 	max_x;
 static fixed_t  max_y;
 
@@ -398,20 +398,20 @@ void AM_findMinMaxBoundaries(void)
 
     min_x = min_y =  MAXINT;
     max_x = max_y = -MAXINT;
-  
+
     for (i=0;i<numvertexes;i++)
     {
 	if (vertexes[i].x < min_x)
 	    min_x = vertexes[i].x;
 	else if (vertexes[i].x > max_x)
 	    max_x = vertexes[i].x;
-    
+
 	if (vertexes[i].y < min_y)
 	    min_y = vertexes[i].y;
 	else if (vertexes[i].y > max_y)
 	    max_y = vertexes[i].y;
     }
-  
+
     max_w = max_x - min_x;
     max_h = max_y - min_y;
 
@@ -420,7 +420,7 @@ void AM_findMinMaxBoundaries(void)
 
     a = FixedDiv(f_w<<FRACBITS, max_w);
     b = FixedDiv(f_h<<FRACBITS, max_h);
-  
+
     min_scale_mtof = a < b ? a : b;
     max_scale_mtof = FixedDiv(f_h<<FRACBITS, 2*PLAYERRADIUS);
 
@@ -445,7 +445,7 @@ void AM_changeWindowLoc(void)
 	m_x = max_x - m_w/2;
     else if (m_x + m_w/2 < min_x)
 	m_x = min_x - m_w/2;
-  
+
     if (m_y + m_h/2 > max_y)
 	m_y = max_y - m_h/2;
     else if (m_y + m_h/2 < min_y)
@@ -483,7 +483,7 @@ void AM_initVariables(void)
 	for (pnum=0;pnum<MAXPLAYERS;pnum++)
 	    if (playeringame[pnum])
 		break;
-  
+
     plr = &players[pnum];
     m_x = plr->mo->x - m_w/2;
     m_y = plr->mo->y - m_h/2;
@@ -501,13 +501,13 @@ void AM_initVariables(void)
 }
 
 //
-// 
+//
 //
 void AM_loadPics(void)
 {
     int i;
     char namebuf[9];
-  
+
     for (i=0;i<10;i++)
     {
 	sprintf(namebuf, "AMMNUM%d", i);
@@ -519,7 +519,7 @@ void AM_loadPics(void)
 void AM_unloadPics(void)
 {
     int i;
-  
+
     for (i=0;i<10;i++)
 	Z_ChangeTag(marknums[i], PU_CACHE);
 
@@ -791,7 +791,7 @@ void AM_updateLightLev(void)
     //static int litelevels[] = { 0, 3, 5, 6, 6, 7, 7, 7 };
     static int litelevels[] = { 0, 4, 7, 10, 12, 14, 15, 15 };
     static int litelevelscnt = 0;
-   
+
     // Change light level
     if (amclock>nexttic)
     {
@@ -859,16 +859,16 @@ AM_clipMline
 	BOTTOM	=4,
 	TOP	=8
     };
-    
+
     register	outcode1 = 0;
     register	outcode2 = 0;
     register	outside;
-    
+
     fpoint_t	tmp;
     int		dx;
     int		dy;
 
-    
+
 #define DOOUTCODE(oc, mx, my) \
     (oc) = 0; \
     if ((my) < 0) (oc) |= TOP; \
@@ -876,7 +876,7 @@ AM_clipMline
     if ((mx) < 0) (oc) |= LEFT; \
     else if ((mx) >= f_w) (oc) |= RIGHT;
 
-    
+
     // do trivial rejects and outcodes
     if (ml->a.y > m_y2)
 	outcode1 = TOP;
@@ -887,7 +887,7 @@ AM_clipMline
 	outcode2 = TOP;
     else if (ml->b.y < m_y)
 	outcode2 = BOTTOM;
-    
+
     if (outcode1 & outcode2)
 	return false; // trivially outside
 
@@ -895,12 +895,12 @@ AM_clipMline
 	outcode1 |= LEFT;
     else if (ml->a.x > m_x2)
 	outcode1 |= RIGHT;
-    
+
     if (ml->b.x < m_x)
 	outcode2 |= LEFT;
     else if (ml->b.x > m_x2)
 	outcode2 |= RIGHT;
-    
+
     if (outcode1 & outcode2)
 	return false; // trivially outside
 
@@ -924,7 +924,7 @@ AM_clipMline
 	    outside = outcode1;
 	else
 	    outside = outcode2;
-	
+
 	// clip to each side
 	if (outside & TOP)
 	{
@@ -965,7 +965,7 @@ AM_clipMline
 	    fl->b = tmp;
 	    DOOUTCODE(outcode2, fl->b.x, fl->b.y);
 	}
-	
+
 	if (outcode1 & outcode2)
 	    return false; // trivially outside
     }
@@ -992,7 +992,7 @@ AM_drawFline
     register int ax;
     register int ay;
     register int d;
-    
+
     static fuck = 0;
 
     // For debugging only
@@ -1184,7 +1184,7 @@ AM_rotate
     tmpx =
 	FixedMul(*x,finecosine[a>>ANGLETOFINESHIFT])
 	- FixedMul(*y,finesine[a>>ANGLETOFINESHIFT]);
-    
+
     *y   =
 	FixedMul(*x,finesine[a>>ANGLETOFINESHIFT])
 	+ FixedMul(*y,finecosine[a>>ANGLETOFINESHIFT]);
@@ -1233,7 +1233,7 @@ AM_drawLineCharacter
 
 	if (angle)
 	    AM_rotate(&l.b.x, &l.b.y, angle);
-	
+
 	l.b.x += x;
 	l.b.y += y;
 
@@ -1277,7 +1277,7 @@ void AM_drawPlayers(void)
 	    color = 246; // *close* to black
 	else
 	    color = their_colors[their_color];
-	
+
 	AM_drawLineCharacter
 	    (player_arrow, NUMPLYRLINES, 0, p->mo->angle,
 	     color, p->mo->x, p->mo->y);

@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -525,7 +525,7 @@
 "BLAZE THROUGH THIS ONE!\n"
 
 
-// after map 06	
+// after map 06
 
 #define P1TEXT  \
 "You gloat over the steaming carcass of the\n"\

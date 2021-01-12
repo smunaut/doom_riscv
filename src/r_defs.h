@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -73,7 +73,7 @@ typedef struct
 {
     fixed_t	x;
     fixed_t	y;
-    
+
 } vertex_t;
 
 
@@ -132,7 +132,7 @@ typedef	struct
 
     int			linecount;
     struct line_s**	lines;	// [linecount] size
-    
+
 } sector_t;
 
 
@@ -146,19 +146,19 @@ typedef struct
 {
     // add this to the calculated texture column
     fixed_t	textureoffset;
-    
+
     // add this to the calculated texture top
     fixed_t	rowoffset;
 
     // Texture indices.
-    // We do not maintain names here. 
+    // We do not maintain names here.
     short	toptexture;
     short	bottomtexture;
     short	midtexture;
 
     // Sector the SideDef is facing.
     sector_t*	sector;
-    
+
 } side_t;
 
 
@@ -194,7 +194,7 @@ typedef struct line_s
 
     // Visual appearance: SideDefs.
     //  sidenum[1] will be -1 if one sided
-    short	sidenum[2];			
+    short	sidenum[2];
 
     // Neat. Another bounding box, for the extent
     //  of the LineDef.
@@ -212,7 +212,7 @@ typedef struct line_s
     int		validcount;
 
     // thinker_t for reversable actions
-    void*	specialdata;		
+    void*	specialdata;
 } line_t;
 
 
@@ -230,7 +230,7 @@ typedef struct subsector_s
     sector_t*	sector;
     short	numlines;
     short	firstline;
-    
+
 } subsector_t;
 
 
@@ -242,7 +242,7 @@ typedef struct
 {
     vertex_t*	v1;
     vertex_t*	v2;
-    
+
     fixed_t	offset;
 
     angle_t	angle;
@@ -255,7 +255,7 @@ typedef struct
     // backsector is NULL for one sided lines
     sector_t*	frontsector;
     sector_t*	backsector;
-    
+
 } seg_t;
 
 
@@ -276,7 +276,7 @@ typedef struct
 
     // If NF_SUBSECTOR its a subsector.
     unsigned short children[2];
-    
+
 } node_t;
 
 
@@ -312,7 +312,7 @@ typedef post_t	column_t;
 //  precalculating 24bpp lightmap/colormap LUT.
 //  from darkening PLAYPAL to all black.
 // Could even us emore than 32 levels.
-typedef byte	lighttable_t;	
+typedef byte	lighttable_t;
 
 
 
@@ -338,13 +338,13 @@ typedef struct drawseg_s
 
     // do not clip sprites below this
     fixed_t		tsilheight;
-    
+
     // Pointers to lists for sprite clipping,
     //  all three adjusted so [x1] is first value.
-    short*		sprtopclip;		
-    short*		sprbottomclip;	
+    short*		sprtopclip;
+    short*		sprbottomclip;
     short*		maskedtexturecol;
-    
+
 } drawseg_t;
 
 
@@ -354,14 +354,14 @@ typedef struct drawseg_s
 // Patches are used for sprites and all masked pictures,
 // and we compose textures from the TEXTURE1/2 lists
 // of patches.
-typedef struct 
-{ 
-    short		width;		// bounding box size 
-    short		height; 
-    short		leftoffset;	// pixels to the left of origin 
-    short		topoffset;	// pixels below the origin 
+typedef struct
+{
+    short		width;		// bounding box size
+    short		height;
+    short		leftoffset;	// pixels to the left of origin
+    short		topoffset;	// pixels below the origin
     int			columnofs[8];	// only [width] used
-    // the [0] is &columnofs[width] 
+    // the [0] is &columnofs[width]
 } patch_t;
 
 
@@ -378,13 +378,13 @@ typedef struct vissprite_s
     // Doubly linked list.
     struct vissprite_s*	prev;
     struct vissprite_s*	next;
-    
+
     int			x1;
     int			x2;
 
     // for line side calculation
     fixed_t		gx;
-    fixed_t		gy;		
+    fixed_t		gy;
 
     // global bottom / top for silhouette clipping
     fixed_t		gz;
@@ -392,11 +392,11 @@ typedef struct vissprite_s
 
     // horizontal position of x1
     fixed_t		startfrac;
-    
+
     fixed_t		scale;
-    
+
     // negative if flipped
-    fixed_t		xiscale;	
+    fixed_t		xiscale;
 
     fixed_t		texturemid;
     int			patch;
@@ -404,13 +404,13 @@ typedef struct vissprite_s
     // for color translation and shadow draw,
     //  maxbright frames as well
     lighttable_t*	colormap;
-   
+
     int			mobjflags;
-    
+
 } vissprite_t;
 
 
-//	
+//
 // Sprites are patches with a special naming convention
 //  so they can be recognized by R_InitSprites.
 // The base name is NNNNFx or NNNNFxFx, with
@@ -437,7 +437,7 @@ typedef struct
 
     // Flip bit (1 = flip) to use for view angles 0-7.
     byte	flip[8];
-    
+
 } spriteframe_t;
 
 
@@ -457,7 +457,7 @@ typedef struct
 
 //
 // Now what is a visplane, anyway?
-// 
+//
 typedef struct
 {
   fixed_t		height;
@@ -465,9 +465,9 @@ typedef struct
   int			lightlevel;
   int			minx;
   int			maxx;
-  
+
   // leave pads for [minx-1]/[maxx+1]
-  
+
   byte		pad1;
   // Here lies the rub for all
   //  dynamic resize/change of resolution.

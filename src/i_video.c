@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -122,7 +122,7 @@ int xlatekey(void)
       case XK_F10:	rc = KEY_F10;		break;
       case XK_F11:	rc = KEY_F11;		break;
       case XK_F12:	rc = KEY_F12;		break;
-	
+
       case XK_BackSpace:
       case XK_Delete:	rc = KEY_BACKSPACE;	break;
 
@@ -138,19 +138,19 @@ int xlatekey(void)
       case XK_Shift_R:
 	rc = KEY_RSHIFT;
 	break;
-	
+
       case XK_Control_L:
       case XK_Control_R:
 	rc = KEY_RCTRL;
 	break;
-	
+
       case XK_Alt_L:
       case XK_Meta_L:
       case XK_Alt_R:
       case XK_Meta_R:
 	rc = KEY_RALT;
 	break;
-	
+
       default:
 	if (rc >= XK_space && rc <= XK_asciitilde)
 	    rc = rc - XK_space + ' ';
@@ -268,11 +268,11 @@ void I_GetEvent(void)
 	    }
 	}
 	break;
-	
+
       case Expose:
       case ConfigureNotify:
 	break;
-	
+
       default:
 	if (doShm && X_event.type == X_shmeventtype) shmFinished = true;
 	break;
@@ -372,7 +372,7 @@ void I_FinishUpdate (void)
 	    screens[0][ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0xff;
 	for ( ; i<20*2 ; i+=2)
 	    screens[0][ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0x0;
-    
+
     }
 
     // scales the screen size before blitting it
@@ -604,7 +604,7 @@ void grabsharedmemory(int size)
   int			rc;
   // UNUSED int done=0;
   int			pollution=5;
-  
+
   // try to use what was here before
   do
   {
@@ -612,7 +612,7 @@ void grabsharedmemory(int size)
     if (id != -1)
     {
       rc=shmctl(id, IPC_STAT, &shminfo); // get stats on it
-      if (!rc) 
+      if (!rc)
       {
 	if (shminfo.shm_nattch)
 	{
@@ -630,15 +630,15 @@ void grabsharedmemory(int size)
 		      "Was able to kill my old shared memory\n");
 	    else
 	      I_Error("Was NOT able to kill my old shared memory");
-	    
+
 	    id = shmget((key_t)key, size, IPC_CREAT|0777);
 	    if (id==-1)
 	      I_Error("Could not get shared memory");
-	    
+
 	    rc=shmctl(id, IPC_STAT, &shminfo);
-	    
+
 	    break;
-	    
+
 	  }
 	  if (size >= shminfo.shm_segsz)
 	  {
@@ -675,18 +675,18 @@ void grabsharedmemory(int size)
       break;
     }
   } while (--pollution);
-  
+
   if (!pollution)
   {
     I_Error("Sorry, system too polluted with stale "
 	    "shared memory segments.\n");
-    }	
-  
+    }
+
   X_shminfo.shmid = id;
-  
+
   // attach to the shared memory segment
   image->data = X_shminfo.shmaddr = shmat(id, 0, 0);
-  
+
   fprintf(stderr, "shared memory id=%d, addr=0x%x\n", id,
 	  (int) (image->data));
 }
@@ -700,11 +700,11 @@ void I_InitGraphics(void)
     int			pnum;
     int			x=0;
     int			y=0;
-    
+
     // warning: char format, different type arg
     char		xsign=' ';
     char		ysign=' ';
-    
+
     int			oktodraw;
     unsigned long	attribmask;
     XSetWindowAttributes attribs;
@@ -744,7 +744,7 @@ void I_InitGraphics(void)
     {
 	// warning: char format, different type arg 3,5
 	n = sscanf(myargv[pnum+1], "%c%d%c%d", &xsign, &x, &ysign, &y);
-	
+
 	if (n==2)
 	    x = y = 0;
 	else if (n==6)
@@ -768,7 +768,7 @@ void I_InitGraphics(void)
 	    I_Error("Could not open display (DISPLAY=[%s])", getenv("DISPLAY"));
     }
 
-    // use the default visual 
+    // use the default visual
     X_screen = DefaultScreen(X_display);
     if (!XMatchVisualInfo(X_display, X_screen, 8, PseudoColor, &X_visualinfo))
 	I_Error("xdoom currently only supports 256-color PseudoColor screens");
@@ -882,7 +882,7 @@ void I_InitGraphics(void)
 	// fprintf(stderr, "shared memory id=%d\n", X_shminfo.shmid);
 	// attach to the shared memory segment
 	// image->data = X_shminfo.shmaddr = shmat(X_shminfo.shmid, 0, 0);
-	
+
 
 	if (!image->data)
 	{
@@ -922,7 +922,7 @@ unsigned	exptable[256];
 void InitExpand (void)
 {
     int		i;
-	
+
     for (i=0 ; i<256 ; i++)
 	exptable[i] = i | (i<<8) | (i<<16) | (i<<24);
 }
@@ -940,7 +940,7 @@ void InitExpand2 (void)
 	double 		d;
 	unsigned	u[2];
     } pixel;
-	
+
     printf ("building exptable2...\n");
     exp = exptable2;
     for (i=0 ; i<256 ; i++)
@@ -968,17 +968,17 @@ Expand4
     unsigned	fourpixels;
     unsigned	step;
     double*	exp;
-	
+
     exp = exptable2;
     if (!inited)
     {
 	inited = 1;
 	InitExpand2 ();
     }
-		
-		
+
+
     step = 3*SCREENWIDTH/2;
-	
+
     y = SCREENHEIGHT-1;
     do
     {
@@ -987,13 +987,13 @@ Expand4
 	do
 	{
 	    fourpixels = lineptr[0];
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff0000)>>13) );
 	    xline[0] = dpixel;
 	    xline[160] = dpixel;
 	    xline[320] = dpixel;
 	    xline[480] = dpixel;
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff)<<3 ) );
 	    xline[1] = dpixel;
 	    xline[161] = dpixel;
@@ -1001,13 +1001,13 @@ Expand4
 	    xline[481] = dpixel;
 
 	    fourpixels = lineptr[1];
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff0000)>>13) );
 	    xline[2] = dpixel;
 	    xline[162] = dpixel;
 	    xline[322] = dpixel;
 	    xline[482] = dpixel;
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff)<<3 ) );
 	    xline[3] = dpixel;
 	    xline[163] = dpixel;
@@ -1015,13 +1015,13 @@ Expand4
 	    xline[483] = dpixel;
 
 	    fourpixels = lineptr[2];
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff0000)>>13) );
 	    xline[4] = dpixel;
 	    xline[164] = dpixel;
 	    xline[324] = dpixel;
 	    xline[484] = dpixel;
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff)<<3 ) );
 	    xline[5] = dpixel;
 	    xline[165] = dpixel;
@@ -1029,13 +1029,13 @@ Expand4
 	    xline[485] = dpixel;
 
 	    fourpixels = lineptr[3];
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff0000)>>13) );
 	    xline[6] = dpixel;
 	    xline[166] = dpixel;
 	    xline[326] = dpixel;
 	    xline[486] = dpixel;
-			
+
 	    dpixel = *(double *)( (int)exp + ( (fourpixels&0xffff)<<3 ) );
 	    xline[7] = dpixel;
 	    xline[167] = dpixel;

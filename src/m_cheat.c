@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -85,7 +85,7 @@ cht_GetParam
 
     p = cht->sequence;
     while (*(p++) != 1);
-    
+
     do
     {
 	c = *p;

@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -87,7 +87,7 @@ M_DrawText
 	    x += 4;
 	    continue;
 	}
-		
+
 	w = SHORT (hu_font[c]->width);
 	if (x+w > SCREENWIDTH)
 	    break;
@@ -119,7 +119,7 @@ M_WriteFile
 {
     int		handle;
     int		count;
-	
+
     handle = open ( name, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666);
 
     if (handle == -1)
@@ -127,10 +127,10 @@ M_WriteFile
 
     count = write (handle, source, length);
     close (handle);
-	
+
     if (count < length)
 	return false;
-		
+
     return true;
 }
 
@@ -146,7 +146,7 @@ M_ReadFile
     int	handle, count, length;
     struct stat	fileinfo;
     byte		*buf;
-	
+
     handle = open (name, O_RDONLY | O_BINARY, 0666);
     if (handle == -1)
 	I_Error ("Couldn't read file %s", name);
@@ -156,10 +156,10 @@ M_ReadFile
     buf = Z_Malloc (length, PU_STATIC, NULL);
     count = read (handle, buf, length);
     close (handle);
-	
+
     if (count < length)
 	I_Error ("Couldn't read file %s", name);
-		
+
     *buffer = buf;
     return length;
 }
@@ -239,7 +239,7 @@ default_t	defaults[] =
     {"sfx_volume",&snd_SfxVolume, 8},
     {"music_volume",&snd_MusicVolume, 8},
     {"show_messages",&showMessages, 1},
-    
+
 
 #ifdef NORMALUNIX
     {"key_right",&key_right, KEY_RIGHTARROW},
@@ -254,12 +254,12 @@ default_t	defaults[] =
     {"key_strafe",&key_strafe, KEY_RALT},
     {"key_speed",&key_speed, KEY_RSHIFT},
 
-// UNIX hack, to be removed. 
+// UNIX hack, to be removed.
 #ifdef SNDSERV
     {"sndserver", (int *) &sndserver_filename, (int) "sndserver"},
     {"mb_used", &mb_used, 2},
 #endif
-    
+
 #endif
 
 #ifdef LINUX
@@ -312,11 +312,11 @@ void M_SaveDefaults (void)
     int		i;
     int		v;
     FILE*	f;
-	
+
     f = fopen (defaultfile, "w");
     if (!f)
 	return; // can't write the file, but don't complain
-		
+
     for (i=0 ; i<numdefaults ; i++)
     {
 	if (defaults[i].defaultvalue > -0xfff
@@ -329,7 +329,7 @@ void M_SaveDefaults (void)
 		     * (char **) (defaults[i].location));
 	}
     }
-	
+
     fclose (f);
 }
 
@@ -349,12 +349,12 @@ void M_LoadDefaults (void)
     char*	newstring;
     int		parm;
     boolean	isstring;
-    
+
     // set everything to base values
     numdefaults = sizeof(defaults)/sizeof(defaults[0]);
     for (i=0 ; i<numdefaults ; i++)
 	*defaults[i].location = defaults[i].defaultvalue;
-    
+
     // check for a custom default file
     i = M_CheckParm ("-config");
     if (i && i<myargc-1)
@@ -364,7 +364,7 @@ void M_LoadDefaults (void)
     }
     else
 	defaultfile = basedefault;
-    
+
     // read the file in, overriding any set defaults
     f = fopen (defaultfile, "r");
     if (f)
@@ -399,7 +399,7 @@ void M_LoadDefaults (void)
 		    }
 	    }
 	}
-		
+
 	fclose (f);
     }
 }
@@ -421,17 +421,17 @@ typedef struct
     unsigned short	ymin;
     unsigned short	xmax;
     unsigned short	ymax;
-    
+
     unsigned short	hres;
     unsigned short	vres;
 
     unsigned char	palette[48];
-    
+
     char		reserved;
     char		color_planes;
     unsigned short	bytes_per_line;
     unsigned short	palette_type;
-    
+
     char		filler[58];
     unsigned char	data;		// unbounded
 } pcx_t;
@@ -452,7 +452,7 @@ WritePCXfile
     int		length;
     pcx_t*	pcx;
     byte*	pack;
-	
+
     pcx = Z_Malloc (width*height*2+1000, PU_STATIC, NULL);
 
     pcx->manufacturer = 0x0a;		// PCX id
@@ -474,7 +474,7 @@ WritePCXfile
 
     // pack the image
     pack = &pcx->data;
-	
+
     for (i=0 ; i<width*height ; i++)
     {
 	if ( (*data & 0xc0) != 0xc0)
@@ -485,12 +485,12 @@ WritePCXfile
 	    *pack++ = *data++;
 	}
     }
-    
+
     // write the palette
     *pack++ = 0x0c;	// palette ID byte
     for (i=0 ; i<768 ; i++)
 	*pack++ = *palette++;
-    
+
     // write output file
     length = pack - (byte *)pcx;
     M_WriteFile (filename, pcx, length);
@@ -507,14 +507,14 @@ void M_ScreenShot (void)
     int		i;
     byte*	linear;
     char	lbmname[12];
-    
+
     // munge planar buffer to linear
     linear = screens[2];
     I_ReadScreen (linear);
-    
+
     // find a file name to save it to
     strcpy(lbmname,"DOOM00.pcx");
-		
+
     for (i=0 ; i<=99 ; i++)
     {
 	lbmname[4] = i/10 + '0';
@@ -524,12 +524,12 @@ void M_ScreenShot (void)
     }
     if (i==100)
 	I_Error ("M_ScreenShot: Couldn't create a PCX");
-    
+
     // save the pcx file
     WritePCXfile (lbmname, linear,
 		  SCREENWIDTH, SCREENHEIGHT,
 		  W_CacheLumpName ("PLAYPAL",PU_CACHE));
-	
+
     players[consoleplayer].message = "screen shot";
 }
 

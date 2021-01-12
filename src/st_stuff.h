@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -61,7 +61,7 @@ typedef enum
 {
     AutomapState,
     FirstPersonState
-    
+
 } st_stateenum_t;
 
 
@@ -71,7 +71,7 @@ typedef enum
     StartChatState,
     WaitDestState,
     GetChatState
-    
+
 } st_chatstateenum_t;
 
 

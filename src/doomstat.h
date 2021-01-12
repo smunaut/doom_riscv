@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -81,7 +81,7 @@ extern	int		startmap;
 
 extern  boolean		autostart;
 
-// Selected by user. 
+// Selected by user.
 extern  skill_t         gameskill;
 extern  int		gameepisode;
 extern  int		gamemap;
@@ -94,8 +94,8 @@ extern  boolean	netgame;
 
 // Flag: true only if started as net deathmatch.
 // An enum might handle altdeath/cooperative better.
-extern  boolean	deathmatch;	
-	
+extern  boolean	deathmatch;
+
 // -------------------------
 // Internal parameters for sound rendering.
 // These have been taken from the DOS version,
@@ -156,7 +156,7 @@ extern	int		scaledviewwidth;
 extern  int	viewangleoffset;
 
 // Player taking events, and displaying.
-extern  int	consoleplayer;	
+extern  int	consoleplayer;
 extern  int	displayplayer;
 
 
@@ -185,7 +185,7 @@ extern  boolean	demoplayback;
 extern  boolean	demorecording;
 
 // Quit after playing a demo from cmdline.
-extern  boolean		singledemo;	
+extern  boolean		singledemo;
 
 
 
@@ -226,7 +226,7 @@ extern  mapthing_t      playerstarts[MAXPLAYERS];
 
 // Intermission stats.
 // Parameters for world map / intermission.
-extern  wbstartstruct_t		wminfo;	
+extern  wbstartstruct_t		wminfo;
 
 
 // LUT of ammunition limits for each kind.
@@ -256,7 +256,7 @@ extern  gamestate_t     wipegamestate;
 extern  int             mouseSensitivity;
 //?
 // debug flag to cancel adaptiveness
-extern  boolean         singletics;	
+extern  boolean         singletics;
 
 extern  int             bodyqueslot;
 
@@ -275,7 +275,7 @@ extern int		skyflatnum;
 extern  doomcom_t*	doomcom;
 
 // This points inside doomcom.
-extern  doomdata_t*	netbuffer;	
+extern  doomdata_t*	netbuffer;
 
 
 extern  ticcmd_t	localcmds[BACKUPTICS];

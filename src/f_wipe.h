@@ -1,4 +1,4 @@
-// Emacs style mode select   -*- C++ -*- 
+// Emacs style mode select   -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -17,7 +17,7 @@
 //
 // DESCRIPTION:
 //	Mission start screen wipe/melt, special effects.
-//	
+//
 //-----------------------------------------------------------------------------
 
 
@@ -32,9 +32,9 @@ enum
 {
     // simple gradual pixel change for 8-bit only
     wipe_ColorXForm,
-    
+
     // weird screen melt
-    wipe_Melt,	
+    wipe_Melt,
 
     wipe_NUMWIPES
 };
