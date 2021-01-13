@@ -513,7 +513,6 @@ menu_t  SaveDef =
 void M_ReadSaveStrings(void)
 {
     int             handle;
-    int             count;
     int             i;
     char    name[256];
 
@@ -531,7 +530,7 @@ void M_ReadSaveStrings(void)
             LoadMenu[i].status = 0;
             continue;
         }
-        count = read (handle, &savegamestrings[i], SAVESTRINGSIZE);
+        read (handle, &savegamestrings[i], SAVESTRINGSIZE);
         close (handle);
         LoadMenu[i].status = 1;
     }
@@ -678,7 +677,7 @@ void M_SaveGame (int choice)
 //
 //      M_QuickSave
 //
-char    tempstring[80];
+char    tempstring[96];
 
 void M_QuickSaveResponse(int ch)
 {
