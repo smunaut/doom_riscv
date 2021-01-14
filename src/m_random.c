@@ -18,7 +18,7 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	Random number LUT.
+//      Random number LUT.
 //
 //-----------------------------------------------------------------------------
 
@@ -52,8 +52,8 @@ unsigned char rndtable[256] = {
     120, 163, 236, 249
 };
 
-int	rndindex = 0;
-int	prndindex = 0;
+int     rndindex = 0;
+int     prndindex = 0;
 
 // Which one is deterministic?
 int P_Random (void)

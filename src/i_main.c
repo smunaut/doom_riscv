@@ -18,7 +18,7 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	Main program, simply calls D_DoomMain high level loop.
+//      Main program, simply calls D_DoomMain high level loop.
 //
 //-----------------------------------------------------------------------------
 
@@ -33,8 +33,8 @@ rcsid[] = "$Id: i_main.c,v 1.4 1997/02/03 22:45:10 b1 Exp $";
 
 int
 main
-( int		argc,
-  char**	argv )
+( int           argc,
+  char**        argv )
 {
     myargc = argc;
     myargv = argv;

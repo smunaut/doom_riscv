@@ -19,8 +19,8 @@
 //
 // Revision 1.3  1997/01/29 20:10
 // DESCRIPTION:
-//	Preparation of data for rendering,
-//	generation of lookups, caching, retrieval by name.
+//      Preparation of data for rendering,
+//      generation of lookups, caching, retrieval by name.
 //
 //-----------------------------------------------------------------------------
 
@@ -69,11 +69,11 @@ rcsid[] = "$Id: r_data.c,v 1.4 1997/02/03 16:47:55 b1 Exp $";
 //
 typedef struct
 {
-    short	originx;
-    short	originy;
-    short	patch;
-    short	stepdir;
-    short	colormap;
+    short       originx;
+    short       originy;
+    short       patch;
+    short       stepdir;
+    short       colormap;
 } mappatch_t;
 
 
@@ -84,13 +84,13 @@ typedef struct
 //
 typedef struct
 {
-    char		name[8];
-    boolean		masked;
-    short		width;
-    short		height;
-    void		**columndirectory;	// OBSOLETE
-    short		patchcount;
-    mappatch_t	patches[1];
+    char                name[8];
+    boolean             masked;
+    short               width;
+    short               height;
+    void                **columndirectory;      // OBSOLETE
+    short               patchcount;
+    mappatch_t  patches[1];
 } maptexture_t;
 
 
@@ -102,9 +102,9 @@ typedef struct
     // Block origin (allways UL),
     // which has allready accounted
     // for the internal origin of the patch.
-    int		originx;
-    int		originy;
-    int		patch;
+    int         originx;
+    int         originy;
+    int         patch;
 } texpatch_t;
 
 
@@ -114,53 +114,53 @@ typedef struct
 typedef struct
 {
     // Keep name for switch changing, etc.
-    char	name[8];
-    short	width;
-    short	height;
+    char        name[8];
+    short       width;
+    short       height;
 
     // All the patches[patchcount]
     //  are drawn back to front into the cached texture.
-    short	patchcount;
-    texpatch_t	patches[1];
+    short       patchcount;
+    texpatch_t  patches[1];
 
 } texture_t;
 
 
 
-int		firstflat;
-int		lastflat;
-int		numflats;
+int             firstflat;
+int             lastflat;
+int             numflats;
 
-int		firstpatch;
-int		lastpatch;
-int		numpatches;
+int             firstpatch;
+int             lastpatch;
+int             numpatches;
 
-int		firstspritelump;
-int		lastspritelump;
-int		numspritelumps;
+int             firstspritelump;
+int             lastspritelump;
+int             numspritelumps;
 
-int		numtextures;
-texture_t**	textures;
+int             numtextures;
+texture_t**     textures;
 
 
-int*			texturewidthmask;
+int*                    texturewidthmask;
 // needed for texture pegging
-fixed_t*		textureheight;
-int*			texturecompositesize;
-short**			texturecolumnlump;
-unsigned short**	texturecolumnofs;
-byte**			texturecomposite;
+fixed_t*                textureheight;
+int*                    texturecompositesize;
+short**                 texturecolumnlump;
+unsigned short**        texturecolumnofs;
+byte**                  texturecomposite;
 
 // for global animation
-int*		flattranslation;
-int*		texturetranslation;
+int*            flattranslation;
+int*            texturetranslation;
 
 // needed for pre rendering
-fixed_t*	spritewidth;
-fixed_t*	spriteoffset;
-fixed_t*	spritetopoffset;
+fixed_t*        spritewidth;
+fixed_t*        spriteoffset;
+fixed_t*        spritetopoffset;
 
-lighttable_t	*colormaps;
+lighttable_t    *colormaps;
 
 
 //
@@ -184,37 +184,37 @@ lighttable_t	*colormaps;
 //
 void
 R_DrawColumnInCache
-( column_t*	patch,
-  byte*		cache,
-  int		originy,
-  int		cacheheight )
+( column_t*     patch,
+  byte*         cache,
+  int           originy,
+  int           cacheheight )
 {
-    int		count;
-    int		position;
-    byte*	source;
-    byte*	dest;
+    int         count;
+    int         position;
+    byte*       source;
+    byte*       dest;
 
     dest = (byte *)cache + 3;
 
     while (patch->topdelta != 0xff)
     {
-	source = (byte *)patch + 3;
-	count = patch->length;
-	position = originy + patch->topdelta;
+        source = (byte *)patch + 3;
+        count = patch->length;
+        position = originy + patch->topdelta;
 
-	if (position < 0)
-	{
-	    count += position;
-	    position = 0;
-	}
+        if (position < 0)
+        {
+            count += position;
+            position = 0;
+        }
 
-	if (position + count > cacheheight)
-	    count = cacheheight - position;
+        if (position + count > cacheheight)
+            count = cacheheight - position;
 
-	if (count > 0)
-	    memcpy (cache + position, source, count);
+        if (count > 0)
+            memcpy (cache + position, source, count);
 
-	patch = (column_t *)(  (byte *)patch + patch->length + 4);
+        patch = (column_t *)(  (byte *)patch + patch->length + 4);
     }
 }
 
@@ -228,23 +228,23 @@ R_DrawColumnInCache
 //
 void R_GenerateComposite (int texnum)
 {
-    byte*		block;
-    texture_t*		texture;
-    texpatch_t*		patch;
-    patch_t*		realpatch;
-    int			x;
-    int			x1;
-    int			x2;
-    int			i;
-    column_t*		patchcol;
-    short*		collump;
-    unsigned short*	colofs;
+    byte*               block;
+    texture_t*          texture;
+    texpatch_t*         patch;
+    patch_t*            realpatch;
+    int                 x;
+    int                 x1;
+    int                 x2;
+    int                 i;
+    column_t*           patchcol;
+    short*              collump;
+    unsigned short*     colofs;
 
     texture = textures[texnum];
 
     block = Z_Malloc (texturecompositesize[texnum],
-		      PU_STATIC,
-		      &texturecomposite[texnum]);
+                      PU_STATIC,
+                      &texturecomposite[texnum]);
 
     collump = texturecolumnlump[texnum];
     colofs = texturecolumnofs[texnum];
@@ -253,34 +253,34 @@ void R_GenerateComposite (int texnum)
     patch = texture->patches;
 
     for (i=0 , patch = texture->patches;
-	 i<texture->patchcount;
-	 i++, patch++)
+         i<texture->patchcount;
+         i++, patch++)
     {
-	realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
-	x1 = patch->originx;
-	x2 = x1 + SHORT(realpatch->width);
+        realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
+        x1 = patch->originx;
+        x2 = x1 + SHORT(realpatch->width);
 
-	if (x1<0)
-	    x = 0;
-	else
-	    x = x1;
+        if (x1<0)
+            x = 0;
+        else
+            x = x1;
 
-	if (x2 > texture->width)
-	    x2 = texture->width;
+        if (x2 > texture->width)
+            x2 = texture->width;
 
-	for ( ; x<x2 ; x++)
-	{
-	    // Column does not have multiple patches?
-	    if (collump[x] >= 0)
-		continue;
+        for ( ; x<x2 ; x++)
+        {
+            // Column does not have multiple patches?
+            if (collump[x] >= 0)
+                continue;
 
-	    patchcol = (column_t *)((byte *)realpatch
-				    + LONG(realpatch->columnofs[x-x1]));
-	    R_DrawColumnInCache (patchcol,
-				 block + colofs[x],
-				 patch->originy,
-				 texture->height);
-	}
+            patchcol = (column_t *)((byte *)realpatch
+                                    + LONG(realpatch->columnofs[x-x1]));
+            R_DrawColumnInCache (patchcol,
+                                 block + colofs[x],
+                                 patch->originy,
+                                 texture->height);
+        }
 
     }
 
@@ -296,16 +296,16 @@ void R_GenerateComposite (int texnum)
 //
 void R_GenerateLookup (int texnum)
 {
-    texture_t*		texture;
-    byte*		patchcount;	// patchcount[texture->width]
-    texpatch_t*		patch;
-    patch_t*		realpatch;
-    int			x;
-    int			x1;
-    int			x2;
-    int			i;
-    short*		collump;
-    unsigned short*	colofs;
+    texture_t*          texture;
+    byte*               patchcount;     // patchcount[texture->width]
+    texpatch_t*         patch;
+    patch_t*            realpatch;
+    int                 x;
+    int                 x1;
+    int                 x2;
+    int                 i;
+    short*              collump;
+    unsigned short*     colofs;
 
     texture = textures[texnum];
 
@@ -325,52 +325,52 @@ void R_GenerateLookup (int texnum)
     patch = texture->patches;
 
     for (i=0 , patch = texture->patches;
-	 i<texture->patchcount;
-	 i++, patch++)
+         i<texture->patchcount;
+         i++, patch++)
     {
-	realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
-	x1 = patch->originx;
-	x2 = x1 + SHORT(realpatch->width);
+        realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
+        x1 = patch->originx;
+        x2 = x1 + SHORT(realpatch->width);
 
-	if (x1 < 0)
-	    x = 0;
-	else
-	    x = x1;
+        if (x1 < 0)
+            x = 0;
+        else
+            x = x1;
 
-	if (x2 > texture->width)
-	    x2 = texture->width;
-	for ( ; x<x2 ; x++)
-	{
-	    patchcount[x]++;
-	    collump[x] = patch->patch;
-	    colofs[x] = LONG(realpatch->columnofs[x-x1])+3;
-	}
+        if (x2 > texture->width)
+            x2 = texture->width;
+        for ( ; x<x2 ; x++)
+        {
+            patchcount[x]++;
+            collump[x] = patch->patch;
+            colofs[x] = LONG(realpatch->columnofs[x-x1])+3;
+        }
     }
 
     for (x=0 ; x<texture->width ; x++)
     {
-	if (!patchcount[x])
-	{
-	    printf ("R_GenerateLookup: column without a patch (%s)\n",
-		    texture->name);
-	    return;
-	}
-	// I_Error ("R_GenerateLookup: column without a patch");
+        if (!patchcount[x])
+        {
+            printf ("R_GenerateLookup: column without a patch (%s)\n",
+                    texture->name);
+            return;
+        }
+        // I_Error ("R_GenerateLookup: column without a patch");
 
-	if (patchcount[x] > 1)
-	{
-	    // Use the cached block.
-	    collump[x] = -1;
-	    colofs[x] = texturecompositesize[texnum];
+        if (patchcount[x] > 1)
+        {
+            // Use the cached block.
+            collump[x] = -1;
+            colofs[x] = texturecompositesize[texnum];
 
-	    if (texturecompositesize[texnum] > 0x10000-texture->height)
-	    {
-		I_Error ("R_GenerateLookup: texture %i is >64k",
-			 texnum);
-	    }
+            if (texturecompositesize[texnum] > 0x10000-texture->height)
+            {
+                I_Error ("R_GenerateLookup: texture %i is >64k",
+                         texnum);
+            }
 
-	    texturecompositesize[texnum] += texture->height;
-	}
+            texturecompositesize[texnum] += texture->height;
+        }
     }
 }
 
@@ -382,21 +382,21 @@ void R_GenerateLookup (int texnum)
 //
 byte*
 R_GetColumn
-( int		tex,
-  int		col )
+( int           tex,
+  int           col )
 {
-    int		lump;
-    int		ofs;
+    int         lump;
+    int         ofs;
 
     col &= texturewidthmask[tex];
     lump = texturecolumnlump[tex][col];
     ofs = texturecolumnofs[tex][col];
 
     if (lump > 0)
-	return (byte *)W_CacheLumpNum(lump,PU_CACHE)+ofs;
+        return (byte *)W_CacheLumpNum(lump,PU_CACHE)+ofs;
 
     if (!texturecomposite[tex])
-	R_GenerateComposite (tex);
+        R_GenerateComposite (tex);
 
     return texturecomposite[tex] + ofs;
 }
@@ -411,37 +411,37 @@ R_GetColumn
 //
 void R_InitTextures (void)
 {
-    maptexture_t*	mtexture;
-    texture_t*		texture;
-    mappatch_t*		mpatch;
-    texpatch_t*		patch;
+    maptexture_t*       mtexture;
+    texture_t*          texture;
+    mappatch_t*         mpatch;
+    texpatch_t*         patch;
 
-    int			i;
-    int			j;
+    int                 i;
+    int                 j;
 
-    int*		maptex;
-    int*		maptex2;
-    int*		maptex1;
+    int*                maptex;
+    int*                maptex2;
+    int*                maptex1;
 
-    char		name[9];
-    char*		names;
-    char*		name_p;
+    char                name[9];
+    char*               names;
+    char*               name_p;
 
-    int*		patchlookup;
+    int*                patchlookup;
 
-    int			totalwidth;
-    int			nummappatches;
-    int			offset;
-    int			maxoff;
-    int			maxoff2;
-    int			numtextures1;
-    int			numtextures2;
+    int                 totalwidth;
+    int                 nummappatches;
+    int                 offset;
+    int                 maxoff;
+    int                 maxoff2;
+    int                 numtextures1;
+    int                 numtextures2;
 
-    int*		directory;
+    int*                directory;
 
-    int			temp1;
-    int			temp2;
-    int			temp3;
+    int                 temp1;
+    int                 temp2;
+    int                 temp3;
 
 
     // Load the patch names from pnames.lmp.
@@ -453,8 +453,8 @@ void R_InitTextures (void)
 
     for (i=0 ; i<nummappatches ; i++)
     {
-	strncpy (name,name_p+i*8, 8);
-	patchlookup[i] = W_CheckNumForName (name);
+        strncpy (name,name_p+i*8, 8);
+        patchlookup[i] = W_CheckNumForName (name);
     }
     Z_Free (names);
 
@@ -468,15 +468,15 @@ void R_InitTextures (void)
 
     if (W_CheckNumForName ("TEXTURE2") != -1)
     {
-	maptex2 = W_CacheLumpName ("TEXTURE2", PU_STATIC);
-	numtextures2 = LONG(*maptex2);
-	maxoff2 = W_LumpLength (W_GetNumForName ("TEXTURE2"));
+        maptex2 = W_CacheLumpName ("TEXTURE2", PU_STATIC);
+        numtextures2 = LONG(*maptex2);
+        maxoff2 = W_LumpLength (W_GetNumForName ("TEXTURE2"));
     }
     else
     {
-	maptex2 = NULL;
-	numtextures2 = 0;
-	maxoff2 = 0;
+        maptex2 = NULL;
+        numtextures2 = 0;
+        maxoff2 = 0;
     }
     numtextures = numtextures1 + numtextures2;
 
@@ -490,88 +490,88 @@ void R_InitTextures (void)
 
     totalwidth = 0;
 
-    //	Really complex printing shit...
+    //  Really complex printing shit...
     temp1 = W_GetNumForName ("S_START");  // P_???????
     temp2 = W_GetNumForName ("S_END") - 1;
     temp3 = ((temp2-temp1+63)/64) + ((numtextures+63)/64);
     printf("[");
     for (i = 0; i < temp3; i++)
-	printf(" ");
+        printf(" ");
     printf("         ]");
     for (i = 0; i < temp3; i++)
-	printf("\x8");
+        printf("\x8");
     printf("\x8\x8\x8\x8\x8\x8\x8\x8\x8\x8");
 
     for (i=0 ; i<numtextures ; i++, directory++)
     {
-	if (!(i&63))
-	    printf (".");
+        if (!(i&63))
+            printf (".");
 
-	if (i == numtextures1)
-	{
-	    // Start looking in second texture file.
-	    maptex = maptex2;
-	    maxoff = maxoff2;
-	    directory = maptex+1;
-	}
+        if (i == numtextures1)
+        {
+            // Start looking in second texture file.
+            maptex = maptex2;
+            maxoff = maxoff2;
+            directory = maptex+1;
+        }
 
-	offset = LONG(*directory);
+        offset = LONG(*directory);
 
-	if (offset > maxoff)
-	    I_Error ("R_InitTextures: bad texture directory");
+        if (offset > maxoff)
+            I_Error ("R_InitTextures: bad texture directory");
 
-	mtexture = (maptexture_t *) ( (byte *)maptex + offset);
+        mtexture = (maptexture_t *) ( (byte *)maptex + offset);
 
-	texture = textures[i] =
-	    Z_Malloc (sizeof(texture_t)
-		      + sizeof(texpatch_t)*(SHORT(mtexture->patchcount)-1),
-		      PU_STATIC, 0);
+        texture = textures[i] =
+            Z_Malloc (sizeof(texture_t)
+                      + sizeof(texpatch_t)*(SHORT(mtexture->patchcount)-1),
+                      PU_STATIC, 0);
 
-	texture->width = SHORT(mtexture->width);
-	texture->height = SHORT(mtexture->height);
-	texture->patchcount = SHORT(mtexture->patchcount);
+        texture->width = SHORT(mtexture->width);
+        texture->height = SHORT(mtexture->height);
+        texture->patchcount = SHORT(mtexture->patchcount);
 
-	memcpy (texture->name, mtexture->name, sizeof(texture->name));
-	mpatch = &mtexture->patches[0];
-	patch = &texture->patches[0];
+        memcpy (texture->name, mtexture->name, sizeof(texture->name));
+        mpatch = &mtexture->patches[0];
+        patch = &texture->patches[0];
 
-	for (j=0 ; j<texture->patchcount ; j++, mpatch++, patch++)
-	{
-	    patch->originx = SHORT(mpatch->originx);
-	    patch->originy = SHORT(mpatch->originy);
-	    patch->patch = patchlookup[SHORT(mpatch->patch)];
-	    if (patch->patch == -1)
-	    {
-		I_Error ("R_InitTextures: Missing patch in texture %s",
-			 texture->name);
-	    }
-	}
-	texturecolumnlump[i] = Z_Malloc (texture->width*2, PU_STATIC,0);
-	texturecolumnofs[i] = Z_Malloc (texture->width*2, PU_STATIC,0);
+        for (j=0 ; j<texture->patchcount ; j++, mpatch++, patch++)
+        {
+            patch->originx = SHORT(mpatch->originx);
+            patch->originy = SHORT(mpatch->originy);
+            patch->patch = patchlookup[SHORT(mpatch->patch)];
+            if (patch->patch == -1)
+            {
+                I_Error ("R_InitTextures: Missing patch in texture %s",
+                         texture->name);
+            }
+        }
+        texturecolumnlump[i] = Z_Malloc (texture->width*2, PU_STATIC,0);
+        texturecolumnofs[i] = Z_Malloc (texture->width*2, PU_STATIC,0);
 
-	j = 1;
-	while (j*2 <= texture->width)
-	    j<<=1;
+        j = 1;
+        while (j*2 <= texture->width)
+            j<<=1;
 
-	texturewidthmask[i] = j-1;
-	textureheight[i] = texture->height<<FRACBITS;
+        texturewidthmask[i] = j-1;
+        textureheight[i] = texture->height<<FRACBITS;
 
-	totalwidth += texture->width;
+        totalwidth += texture->width;
     }
 
     Z_Free (maptex1);
     if (maptex2)
-	Z_Free (maptex2);
+        Z_Free (maptex2);
 
     // Precalculate whatever possible.
     for (i=0 ; i<numtextures ; i++)
-	R_GenerateLookup (i);
+        R_GenerateLookup (i);
 
     // Create translation table for global animation.
     texturetranslation = Z_Malloc ((numtextures+1)*4, PU_STATIC, 0);
 
     for (i=0 ; i<numtextures ; i++)
-	texturetranslation[i] = i;
+        texturetranslation[i] = i;
 }
 
 
@@ -581,7 +581,7 @@ void R_InitTextures (void)
 //
 void R_InitFlats (void)
 {
-    int		i;
+    int         i;
 
     firstflat = W_GetNumForName ("F_START") + 1;
     lastflat = W_GetNumForName ("F_END") - 1;
@@ -591,7 +591,7 @@ void R_InitFlats (void)
     flattranslation = Z_Malloc ((numflats+1)*4, PU_STATIC, 0);
 
     for (i=0 ; i<numflats ; i++)
-	flattranslation[i] = i;
+        flattranslation[i] = i;
 }
 
 
@@ -603,8 +603,8 @@ void R_InitFlats (void)
 //
 void R_InitSpriteLumps (void)
 {
-    int		i;
-    patch_t	*patch;
+    int         i;
+    patch_t     *patch;
 
     firstspritelump = W_GetNumForName ("S_START") + 1;
     lastspritelump = W_GetNumForName ("S_END") - 1;
@@ -616,13 +616,13 @@ void R_InitSpriteLumps (void)
 
     for (i=0 ; i< numspritelumps ; i++)
     {
-	if (!(i&63))
-	    printf (".");
+        if (!(i&63))
+            printf (".");
 
-	patch = W_CacheLumpNum (firstspritelump+i, PU_CACHE);
-	spritewidth[i] = SHORT(patch->width)<<FRACBITS;
-	spriteoffset[i] = SHORT(patch->leftoffset)<<FRACBITS;
-	spritetopoffset[i] = SHORT(patch->topoffset)<<FRACBITS;
+        patch = W_CacheLumpNum (firstspritelump+i, PU_CACHE);
+        spritewidth[i] = SHORT(patch->width)<<FRACBITS;
+        spriteoffset[i] = SHORT(patch->leftoffset)<<FRACBITS;
+        spritetopoffset[i] = SHORT(patch->topoffset)<<FRACBITS;
     }
 }
 
@@ -633,7 +633,7 @@ void R_InitSpriteLumps (void)
 //
 void R_InitColormaps (void)
 {
-    int	lump, length;
+    int lump, length;
 
     // Load in the light tables,
     //  256 byte align tables.
@@ -672,16 +672,16 @@ void R_InitData (void)
 //
 int R_FlatNumForName (char* name)
 {
-    int		i;
-    char	namet[9];
+    int         i;
+    char        namet[9];
 
     i = W_CheckNumForName (name);
 
     if (i == -1)
     {
-	namet[8] = 0;
-	memcpy (namet, name,8);
-	I_Error ("R_FlatNumForName: %s not found",namet);
+        namet[8] = 0;
+        memcpy (namet, name,8);
+        I_Error ("R_FlatNumForName: %s not found",namet);
     }
     return i - firstflat;
 }
@@ -694,17 +694,17 @@ int R_FlatNumForName (char* name)
 // Check whether texture is available.
 // Filter out NoTexture indicator.
 //
-int	R_CheckTextureNumForName (char *name)
+int     R_CheckTextureNumForName (char *name)
 {
-    int		i;
+    int         i;
 
     // "NoTexture" marker.
     if (name[0] == '-')
-	return 0;
+        return 0;
 
     for (i=0 ; i<numtextures ; i++)
-	if (!strncasecmp (textures[i]->name, name, 8) )
-	    return i;
+        if (!strncasecmp (textures[i]->name, name, 8) )
+            return i;
 
     return -1;
 }
@@ -716,16 +716,16 @@ int	R_CheckTextureNumForName (char *name)
 // Calls R_CheckTextureNumForName,
 //  aborts with error message.
 //
-int	R_TextureNumForName (char* name)
+int     R_TextureNumForName (char* name)
 {
-    int		i;
+    int         i;
 
     i = R_CheckTextureNumForName (name);
 
     if (i==-1)
     {
-	I_Error ("R_TextureNumForName: %s not found",
-		 name);
+        I_Error ("R_TextureNumForName: %s not found",
+                 name);
     }
     return i;
 }
@@ -737,27 +737,27 @@ int	R_TextureNumForName (char* name)
 // R_PrecacheLevel
 // Preloads all relevant graphics for the level.
 //
-int		flatmemory;
-int		texturememory;
-int		spritememory;
+int             flatmemory;
+int             texturememory;
+int             spritememory;
 
 void R_PrecacheLevel (void)
 {
-    char*		flatpresent;
-    char*		texturepresent;
-    char*		spritepresent;
+    char*               flatpresent;
+    char*               texturepresent;
+    char*               spritepresent;
 
-    int			i;
-    int			j;
-    int			k;
-    int			lump;
+    int                 i;
+    int                 j;
+    int                 k;
+    int                 lump;
 
-    texture_t*		texture;
-    thinker_t*		th;
-    spriteframe_t*	sf;
+    texture_t*          texture;
+    thinker_t*          th;
+    spriteframe_t*      sf;
 
     if (demoplayback)
-	return;
+        return;
 
     // Precache flats.
     flatpresent = alloca(numflats);
@@ -765,20 +765,20 @@ void R_PrecacheLevel (void)
 
     for (i=0 ; i<numsectors ; i++)
     {
-	flatpresent[sectors[i].floorpic] = 1;
-	flatpresent[sectors[i].ceilingpic] = 1;
+        flatpresent[sectors[i].floorpic] = 1;
+        flatpresent[sectors[i].ceilingpic] = 1;
     }
 
     flatmemory = 0;
 
     for (i=0 ; i<numflats ; i++)
     {
-	if (flatpresent[i])
-	{
-	    lump = firstflat + i;
-	    flatmemory += lumpinfo[lump].size;
-	    W_CacheLumpNum(lump, PU_CACHE);
-	}
+        if (flatpresent[i])
+        {
+            lump = firstflat + i;
+            flatmemory += lumpinfo[lump].size;
+            W_CacheLumpNum(lump, PU_CACHE);
+        }
     }
 
     // Precache textures.
@@ -787,9 +787,9 @@ void R_PrecacheLevel (void)
 
     for (i=0 ; i<numsides ; i++)
     {
-	texturepresent[sides[i].toptexture] = 1;
-	texturepresent[sides[i].midtexture] = 1;
-	texturepresent[sides[i].bottomtexture] = 1;
+        texturepresent[sides[i].toptexture] = 1;
+        texturepresent[sides[i].midtexture] = 1;
+        texturepresent[sides[i].bottomtexture] = 1;
     }
 
     // Sky texture is always present.
@@ -803,17 +803,17 @@ void R_PrecacheLevel (void)
     texturememory = 0;
     for (i=0 ; i<numtextures ; i++)
     {
-	if (!texturepresent[i])
-	    continue;
+        if (!texturepresent[i])
+            continue;
 
-	texture = textures[i];
+        texture = textures[i];
 
-	for (j=0 ; j<texture->patchcount ; j++)
-	{
-	    lump = texture->patches[j].patch;
-	    texturememory += lumpinfo[lump].size;
-	    W_CacheLumpNum(lump , PU_CACHE);
-	}
+        for (j=0 ; j<texture->patchcount ; j++)
+        {
+            lump = texture->patches[j].patch;
+            texturememory += lumpinfo[lump].size;
+            W_CacheLumpNum(lump , PU_CACHE);
+        }
     }
 
     // Precache sprites.
@@ -822,26 +822,26 @@ void R_PrecacheLevel (void)
 
     for (th = thinkercap.next ; th != &thinkercap ; th=th->next)
     {
-	if (th->function.acp1 == (actionf_p1)P_MobjThinker)
-	    spritepresent[((mobj_t *)th)->sprite] = 1;
+        if (th->function.acp1 == (actionf_p1)P_MobjThinker)
+            spritepresent[((mobj_t *)th)->sprite] = 1;
     }
 
     spritememory = 0;
     for (i=0 ; i<numsprites ; i++)
     {
-	if (!spritepresent[i])
-	    continue;
+        if (!spritepresent[i])
+            continue;
 
-	for (j=0 ; j<sprites[i].numframes ; j++)
-	{
-	    sf = &sprites[i].spriteframes[j];
-	    for (k=0 ; k<8 ; k++)
-	    {
-		lump = firstspritelump + sf->lump[k];
-		spritememory += lumpinfo[lump].size;
-		W_CacheLumpNum(lump , PU_CACHE);
-	    }
-	}
+        for (j=0 ; j<sprites[i].numframes ; j++)
+        {
+            sf = &sprites[i].spriteframes[j];
+            for (k=0 ; k<8 ; k++)
+            {
+                lump = firstspritelump + sf->lump[k];
+                spritememory += lumpinfo[lump].size;
+                W_CacheLumpNum(lump , PU_CACHE);
+            }
+        }
     }
 }
 

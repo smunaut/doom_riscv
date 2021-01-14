@@ -38,12 +38,12 @@ enum { VERSION =  110 };
 //  to handle IWAD dependend animations etc.
 typedef enum
 {
-  shareware,	// DOOM 1 shareware, E1, M9
-  registered,	// DOOM 1 registered, E3, M27
-  commercial,	// DOOM 2 retail, E1 M34
+  shareware,    // DOOM 1 shareware, E1, M9
+  registered,   // DOOM 1 registered, E3, M27
+  commercial,   // DOOM 2 retail, E1 M34
   // DOOM 2 german edition not handled
-  retail,	// DOOM 1 retail, E4, M36
-  indetermined	// Well, no IWAD found.
+  retail,       // DOOM 1 retail, E4, M36
+  indetermined  // Well, no IWAD found.
 
 } GameMode_t;
 
@@ -51,10 +51,10 @@ typedef enum
 // Mission packs - might be useful for TC stuff?
 typedef enum
 {
-  doom,		// DOOM 1
-  doom2,	// DOOM 2
-  pack_tnt,	// TNT mission pack
-  pack_plut,	// Plutonia pack
+  doom,         // DOOM 1
+  doom2,        // DOOM 2
+  pack_tnt,     // TNT mission pack
+  pack_plut,    // Plutonia pack
   none
 
 } GameMission_t;
@@ -89,21 +89,21 @@ typedef enum
 // This one switches between MIT SHM (no proper mouse)
 // and XFree86 DGA (mickey sampling). The original
 // linuxdoom used SHM, which is default.
-//#define X11_DGA		1
+//#define X11_DGA               1
 
 
 //
 // For resize of screen, at start of game.
 // It will not work dynamically, see visplanes.
 //
-#define	BASE_WIDTH		320
+#define BASE_WIDTH              320
 
 // It is educational but futile to change this
 //  scaling e.g. to 2. Drawing of status bar,
 //  menues etc. is tied to the scale implied
 //  by the graphics.
-#define	SCREEN_MUL		1
-#define	INV_ASPECT_RATIO	0.625 // 0.75, ideally
+#define SCREEN_MUL              1
+#define INV_ASPECT_RATIO        0.625 // 0.75, ideally
 
 // Defines suck. C sucks.
 // C++ might sucks for OOP, but it sure is a better C.
@@ -117,10 +117,10 @@ typedef enum
 
 
 // The maximum number of players, multiplayer/networking.
-#define MAXPLAYERS		4
+#define MAXPLAYERS              4
 
 // State updates, number of tics / second.
-#define TICRATE		35
+#define TICRATE         35
 
 // The current state of the game: whether we are
 // playing, gazing at the intermission screen,
@@ -138,12 +138,12 @@ typedef enum
 //
 
 // Skill flags.
-#define	MTF_EASY		1
-#define	MTF_NORMAL		2
-#define	MTF_HARD		4
+#define MTF_EASY                1
+#define MTF_NORMAL              2
+#define MTF_HARD                4
 
 // Deaf monsters/do not react to sound.
-#define	MTF_AMBUSH		8
+#define MTF_AMBUSH              8
 
 typedef enum
 {
@@ -201,12 +201,12 @@ typedef enum
 // Ammunition types defined.
 typedef enum
 {
-    am_clip,	// Pistol / chaingun ammo.
-    am_shell,	// Shotgun / double barreled shotgun.
-    am_cell,	// Plasma rifle, BFG.
-    am_misl,	// Missile launcher.
+    am_clip,    // Pistol / chaingun ammo.
+    am_shell,   // Shotgun / double barreled shotgun.
+    am_cell,    // Plasma rifle, BFG.
+    am_misl,    // Missile launcher.
     NUMAMMO,
-    am_noammo	// Unlimited for chainsaw / fist.
+    am_noammo   // Unlimited for chainsaw / fist.
 
 } ammotype_t;
 
@@ -233,10 +233,10 @@ typedef enum
 //
 typedef enum
 {
-    INVULNTICS	= (30*TICRATE),
-    INVISTICS	= (60*TICRATE),
-    INFRATICS	= (120*TICRATE),
-    IRONTICS	= (60*TICRATE)
+    INVULNTICS  = (30*TICRATE),
+    INVISTICS   = (60*TICRATE),
+    INFRATICS   = (120*TICRATE),
+    IRONTICS    = (60*TICRATE)
 
 } powerduration_t;
 
@@ -248,37 +248,37 @@ typedef enum
 // This is the stuff configured by Setup.Exe.
 // Most key data are simple ascii (uppercased).
 //
-#define KEY_RIGHTARROW	0xae
-#define KEY_LEFTARROW	0xac
-#define KEY_UPARROW	0xad
-#define KEY_DOWNARROW	0xaf
-#define KEY_ESCAPE	27
-#define KEY_ENTER	13
-#define KEY_TAB		9
-#define KEY_F1		(0x80+0x3b)
-#define KEY_F2		(0x80+0x3c)
-#define KEY_F3		(0x80+0x3d)
-#define KEY_F4		(0x80+0x3e)
-#define KEY_F5		(0x80+0x3f)
-#define KEY_F6		(0x80+0x40)
-#define KEY_F7		(0x80+0x41)
-#define KEY_F8		(0x80+0x42)
-#define KEY_F9		(0x80+0x43)
-#define KEY_F10		(0x80+0x44)
-#define KEY_F11		(0x80+0x57)
-#define KEY_F12		(0x80+0x58)
+#define KEY_RIGHTARROW  0xae
+#define KEY_LEFTARROW   0xac
+#define KEY_UPARROW     0xad
+#define KEY_DOWNARROW   0xaf
+#define KEY_ESCAPE      27
+#define KEY_ENTER       13
+#define KEY_TAB         9
+#define KEY_F1          (0x80+0x3b)
+#define KEY_F2          (0x80+0x3c)
+#define KEY_F3          (0x80+0x3d)
+#define KEY_F4          (0x80+0x3e)
+#define KEY_F5          (0x80+0x3f)
+#define KEY_F6          (0x80+0x40)
+#define KEY_F7          (0x80+0x41)
+#define KEY_F8          (0x80+0x42)
+#define KEY_F9          (0x80+0x43)
+#define KEY_F10         (0x80+0x44)
+#define KEY_F11         (0x80+0x57)
+#define KEY_F12         (0x80+0x58)
 
-#define KEY_BACKSPACE	127
-#define KEY_PAUSE	0xff
+#define KEY_BACKSPACE   127
+#define KEY_PAUSE       0xff
 
-#define KEY_EQUALS	0x3d
-#define KEY_MINUS	0x2d
+#define KEY_EQUALS      0x3d
+#define KEY_MINUS       0x2d
 
-#define KEY_RSHIFT	(0x80+0x36)
-#define KEY_RCTRL	(0x80+0x1d)
-#define KEY_RALT	(0x80+0x38)
+#define KEY_RSHIFT      (0x80+0x36)
+#define KEY_RCTRL       (0x80+0x1d)
+#define KEY_RALT        (0x80+0x38)
 
-#define KEY_LALT	KEY_RALT
+#define KEY_LALT        KEY_RALT
 
 
 

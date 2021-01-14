@@ -18,7 +18,7 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	Mission begin melt/wipe screen special effect.
+//      Mission begin melt/wipe screen special effect.
 //
 //-----------------------------------------------------------------------------
 
@@ -40,28 +40,28 @@ rcsid[] = "$Id: f_wipe.c,v 1.2 1997/02/03 22:45:09 b1 Exp $";
 //
 
 // when zero, stop the wipe
-static boolean	go = 0;
+static boolean  go = 0;
 
-static byte*	wipe_scr_start;
-static byte*	wipe_scr_end;
-static byte*	wipe_scr;
+static byte*    wipe_scr_start;
+static byte*    wipe_scr_end;
+static byte*    wipe_scr;
 
 
 void
 wipe_shittyColMajorXform
-( short*	array,
-  int		width,
-  int		height )
+( short*        array,
+  int           width,
+  int           height )
 {
-    int		x;
-    int		y;
-    short*	dest;
+    int         x;
+    int         y;
+    short*      dest;
 
     dest = (short*) Z_Malloc(width*height*2, PU_STATIC, 0);
 
     for(y=0;y<height;y++)
-	for(x=0;x<width;x++)
-	    dest[x*height+y] = array[y*width+x];
+        for(x=0;x<width;x++)
+            dest[x*height+y] = array[y*width+x];
 
     memcpy(array, dest, width*height*2);
 
@@ -71,9 +71,9 @@ wipe_shittyColMajorXform
 
 int
 wipe_initColorXForm
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
     memcpy(wipe_scr, wipe_scr_start, width*height);
     return 0;
@@ -81,14 +81,14 @@ wipe_initColorXForm
 
 int
 wipe_doColorXForm
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
-    boolean	changed;
-    byte*	w;
-    byte*	e;
-    int		newval;
+    boolean     changed;
+    byte*       w;
+    byte*       e;
+    int         newval;
 
     changed = false;
     w = wipe_scr;
@@ -96,29 +96,29 @@ wipe_doColorXForm
 
     while (w!=wipe_scr+width*height)
     {
-	if (*w != *e)
-	{
-	    if (*w > *e)
-	    {
-		newval = *w - ticks;
-		if (newval < *e)
-		    *w = *e;
-		else
-		    *w = newval;
-		changed = true;
-	    }
-	    else if (*w < *e)
-	    {
-		newval = *w + ticks;
-		if (newval > *e)
-		    *w = *e;
-		else
-		    *w = newval;
-		changed = true;
-	    }
-	}
-	w++;
-	e++;
+        if (*w != *e)
+        {
+            if (*w > *e)
+            {
+                newval = *w - ticks;
+                if (newval < *e)
+                    *w = *e;
+                else
+                    *w = newval;
+                changed = true;
+            }
+            else if (*w < *e)
+            {
+                newval = *w + ticks;
+                if (newval > *e)
+                    *w = *e;
+                else
+                    *w = newval;
+                changed = true;
+            }
+        }
+        w++;
+        e++;
     }
 
     return !changed;
@@ -127,21 +127,21 @@ wipe_doColorXForm
 
 int
 wipe_exitColorXForm
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
     return 0;
 }
 
 
-static int*	y;
+static int*     y;
 
 int
 wipe_initMelt
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
     int i, r;
 
@@ -159,10 +159,10 @@ wipe_initMelt
     y[0] = -(M_Random()%16);
     for (i=1;i<width;i++)
     {
-	r = (M_Random()%3) - 1;
-	y[i] = y[i-1] + r;
-	if (y[i] > 0) y[i] = 0;
-	else if (y[i] == -16) y[i] = -15;
+        r = (M_Random()%3) - 1;
+        y[i] = y[i-1] + r;
+        if (y[i] > 0) y[i] = 0;
+        else if (y[i] == -16) y[i] = -15;
     }
 
     return 0;
@@ -170,53 +170,53 @@ wipe_initMelt
 
 int
 wipe_doMelt
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
-    int		i;
-    int		j;
-    int		dy;
-    int		idx;
+    int         i;
+    int         j;
+    int         dy;
+    int         idx;
 
-    short*	s;
-    short*	d;
-    boolean	done = true;
+    short*      s;
+    short*      d;
+    boolean     done = true;
 
     width/=2;
 
     while (ticks--)
     {
-	for (i=0;i<width;i++)
-	{
-	    if (y[i]<0)
-	    {
-		y[i]++; done = false;
-	    }
-	    else if (y[i] < height)
-	    {
-		dy = (y[i] < 16) ? y[i]+1 : 8;
-		if (y[i]+dy >= height) dy = height - y[i];
-		s = &((short *)wipe_scr_end)[i*height+y[i]];
-		d = &((short *)wipe_scr)[y[i]*width+i];
-		idx = 0;
-		for (j=dy;j;j--)
-		{
-		    d[idx] = *(s++);
-		    idx += width;
-		}
-		y[i] += dy;
-		s = &((short *)wipe_scr_start)[i*height];
-		d = &((short *)wipe_scr)[y[i]*width+i];
-		idx = 0;
-		for (j=height-y[i];j;j--)
-		{
-		    d[idx] = *(s++);
-		    idx += width;
-		}
-		done = false;
-	    }
-	}
+        for (i=0;i<width;i++)
+        {
+            if (y[i]<0)
+            {
+                y[i]++; done = false;
+            }
+            else if (y[i] < height)
+            {
+                dy = (y[i] < 16) ? y[i]+1 : 8;
+                if (y[i]+dy >= height) dy = height - y[i];
+                s = &((short *)wipe_scr_end)[i*height+y[i]];
+                d = &((short *)wipe_scr)[y[i]*width+i];
+                idx = 0;
+                for (j=dy;j;j--)
+                {
+                    d[idx] = *(s++);
+                    idx += width;
+                }
+                y[i] += dy;
+                s = &((short *)wipe_scr_start)[i*height];
+                d = &((short *)wipe_scr)[y[i]*width+i];
+                idx = 0;
+                for (j=height-y[i];j;j--)
+                {
+                    d[idx] = *(s++);
+                    idx += width;
+                }
+                done = false;
+            }
+        }
     }
 
     return done;
@@ -225,9 +225,9 @@ wipe_doMelt
 
 int
 wipe_exitMelt
-( int	width,
-  int	height,
-  int	ticks )
+( int   width,
+  int   height,
+  int   ticks )
 {
     Z_Free(y);
     return 0;
@@ -235,10 +235,10 @@ wipe_exitMelt
 
 int
 wipe_StartScreen
-( int	x,
-  int	y,
-  int	width,
-  int	height )
+( int   x,
+  int   y,
+  int   width,
+  int   height )
 {
     wipe_scr_start = screens[2];
     I_ReadScreen(wipe_scr_start);
@@ -247,10 +247,10 @@ wipe_StartScreen
 
 int
 wipe_EndScreen
-( int	x,
-  int	y,
-  int	width,
-  int	height )
+( int   x,
+  int   y,
+  int   width,
+  int   height )
 {
     wipe_scr_end = screens[3];
     I_ReadScreen(wipe_scr_end);
@@ -260,18 +260,18 @@ wipe_EndScreen
 
 int
 wipe_ScreenWipe
-( int	wipeno,
-  int	x,
-  int	y,
-  int	width,
-  int	height,
-  int	ticks )
+( int   wipeno,
+  int   x,
+  int   y,
+  int   width,
+  int   height,
+  int   ticks )
 {
     int rc;
     static int (*wipes[])(int, int, int) =
     {
-	wipe_initColorXForm, wipe_doColorXForm, wipe_exitColorXForm,
-	wipe_initMelt, wipe_doMelt, wipe_exitMelt
+        wipe_initColorXForm, wipe_doColorXForm, wipe_exitColorXForm,
+        wipe_initMelt, wipe_doMelt, wipe_exitMelt
     };
 
     void V_MarkRect(int, int, int, int);
@@ -279,10 +279,10 @@ wipe_ScreenWipe
     // initial stuff
     if (!go)
     {
-	go = 1;
-	// wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
-	wipe_scr = screens[0];
-	(*wipes[wipeno*3])(width, height, ticks);
+        go = 1;
+        // wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
+        wipe_scr = screens[0];
+        (*wipes[wipeno*3])(width, height, ticks);
     }
 
     // do a piece of wipe-in
@@ -293,8 +293,8 @@ wipe_ScreenWipe
     // final stuff
     if (rc)
     {
-	go = 0;
-	(*wipes[wipeno*3+2])(width, height, ticks);
+        go = 0;
+        (*wipes[wipeno*3+2])(width, height, ticks);
     }
 
     return !go;

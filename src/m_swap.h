@@ -16,7 +16,7 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	Endianess handling, swapping 16bit and 32bit.
+//      Endianess handling, swapping 16bit and 32bit.
 //
 //-----------------------------------------------------------------------------
 
@@ -33,12 +33,12 @@
 // Endianess handling.
 // WAD files are stored little endian.
 #ifdef __BIG_ENDIAN__
-short	SwapSHORT(short);
-long	SwapLONG(long);
-#define SHORT(x)	((short)SwapSHORT((unsigned short) (x)))
+short   SwapSHORT(short);
+long    SwapLONG(long);
+#define SHORT(x)        ((short)SwapSHORT((unsigned short) (x)))
 #define LONG(x)         ((long)SwapLONG((unsigned long) (x)))
 #else
-#define SHORT(x)	(x)
+#define SHORT(x)        (x)
 #define LONG(x)         (x)
 #endif
 

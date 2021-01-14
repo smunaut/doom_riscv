@@ -18,7 +18,7 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	Globally defined strings.
+//      Globally defined strings.
 //
 //-----------------------------------------------------------------------------
 

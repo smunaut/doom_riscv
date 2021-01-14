@@ -18,8 +18,8 @@
 // $Log:$
 //
 // DESCRIPTION:
-//	Created by a sound utility.
-//	Kept as a sample, DOOM2 sounds.
+//      Created by a sound utility.
+//      Kept as a sample, DOOM2 sounds.
 //
 //-----------------------------------------------------------------------------
 

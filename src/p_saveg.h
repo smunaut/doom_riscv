@@ -16,7 +16,7 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	Savegame I/O, archiving, persistence.
+//      Savegame I/O, archiving, persistence.
 //
 //-----------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ void P_UnArchiveThinkers (void);
 void P_ArchiveSpecials (void);
 void P_UnArchiveSpecials (void);
 
-extern byte*		save_p;
+extern byte*            save_p;
 
 
 #endif

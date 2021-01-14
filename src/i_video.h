@@ -16,7 +16,7 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	System specific interface stuff.
+//      System specific interface stuff.
 //
 //-----------------------------------------------------------------------------
 

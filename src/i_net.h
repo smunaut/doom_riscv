@@ -16,7 +16,7 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	System specific network interface stuff.
+//      System specific network interface stuff.
 //
 //-----------------------------------------------------------------------------
 
