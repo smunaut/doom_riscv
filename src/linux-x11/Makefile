@@ -6,6 +6,7 @@ LIBS=-lXext -lX11 -lm
 CFLAGS+=\
 	-DNORMALUNIX \
 	-DLINUX \
+	-DDEBUG \
 	-DRANGECHECK \
 	$(NULL)
 

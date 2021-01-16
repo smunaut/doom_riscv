@@ -243,7 +243,12 @@ extern  int             maxammo[NUMAMMO];
 
 // File handling stuff.
 extern  char            basedefault[1024];
+
+#ifdef DEBUG
 extern  FILE*           debugfile;
+#else
+#define debugfile 0
+#endif
 
 // if true, load all graphics at level load
 extern  boolean         precache;
