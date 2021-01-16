@@ -8,6 +8,7 @@ CFLAGS+=\
 	-DLINUX \
 	-DDEBUG \
 	-DRANGECHECK \
+	-DSNDSERV \
 	$(NULL)
 
 
