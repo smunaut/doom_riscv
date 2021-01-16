@@ -29,6 +29,7 @@ static const char __attribute__((unused))
 rcsid[] = "$Id: m_misc.c,v 1.6 1997/02/03 22:45:10 b1 Exp $";
 
 
+#include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -507,6 +508,7 @@ void M_ScreenShot (void)
     int         i;
     byte*       linear;
     char        lbmname[12];
+    struct stat fs;
 
     // munge planar buffer to linear
     linear = screens[2];
@@ -519,7 +521,7 @@ void M_ScreenShot (void)
     {
         lbmname[4] = i/10 + '0';
         lbmname[5] = i%10 + '0';
-        if (access(lbmname,0) == -1)
+        if ((stat(lbmname, &fs) == -1) && (errno == ENOENT))
             break;      // file doesn't exist
     }
     if (i==100)
