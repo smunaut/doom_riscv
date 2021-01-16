@@ -65,9 +65,11 @@ void**                  lumpcache;
 
 #define strcmpi strcasecmp
 
-void strupr (char* s)
+char* strupr (char* str)
 {
+    char *s = str;
     while (*s) { *s = toupper(*s); s++; }
+    return str;
 }
 
 int filelength (int handle)
