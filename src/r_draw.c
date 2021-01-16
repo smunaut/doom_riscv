@@ -66,8 +66,6 @@ int             scaledviewwidth;
 int             viewheight;
 int             viewwindowx;
 int             viewwindowy;
-byte*           ylookup[MAXHEIGHT];
-int             columnofs[MAXWIDTH];
 
 // Color tables for different players,
 //  translate a limited part to another
@@ -123,9 +121,7 @@ void R_DrawColumn (void)
 #endif
 
     // Framebuffer destination address.
-    // Use ylookup LUT to avoid multiply with ScreenWidth.
-    // Use columnofs LUT for subwindows?
-    dest = ylookup[dc_yl] + columnofs[dc_x];
+    dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
 
     // Determine scaling,
     //  which is the only mapping to be done.
@@ -176,8 +172,8 @@ void R_DrawColumnLow (void)
     // Blocky mode, need to multiply by 2.
     dc_x <<= 1;
 
-    dest = ylookup[dc_yl] + columnofs[dc_x];
-    dest2 = ylookup[dc_yl] + columnofs[dc_x+1];
+    dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
+    dest2 = dest + 1;
 
     fracstep = dc_iscale;
     frac = dc_texturemid + (dc_yl-centery)*fracstep;
@@ -281,7 +277,7 @@ void R_DrawFuzzColumn (void)
 
 
     // Does not work with blocky mode.
-    dest = ylookup[dc_yl] + columnofs[dc_x];
+    dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
 
     // Looks familiar.
     fracstep = dc_iscale;
@@ -366,7 +362,7 @@ void R_DrawTranslatedColumn (void)
 
 
     // FIXME. As above.
-    dest = ylookup[dc_yl] + columnofs[dc_x];
+    dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
 
     // Looks familiar.
     fracstep = dc_iscale;
@@ -482,7 +478,7 @@ void R_DrawSpan (void)
     xfrac = ds_xfrac;
     yfrac = ds_yfrac;
 
-    dest = ylookup[ds_y] + columnofs[ds_x1];
+    dest = screens[0] + (viewwindowy + ds_y) * SCREENWIDTH + (viewwindowx + ds_x1);
 
     // We do not check for zero spans here?
     count = ds_x2 - ds_x1;
@@ -535,7 +531,7 @@ void R_DrawSpanLow (void)
     ds_x1 <<= 1;
     ds_x2 <<= 1;
 
-    dest = ylookup[ds_y] + columnofs[ds_x1];
+    dest = screens[0] + (viewwindowy + ds_y) * SCREENWIDTH + (viewwindowx + ds_x1);
 
 
     count = ds_x2 - ds_x1;
@@ -565,26 +561,16 @@ R_InitBuffer
 ( int           width,
   int           height )
 {
-    int         i;
-
     // Handle resize,
     //  e.g. smaller view windows
     //  with border and/or status bar.
     viewwindowx = (SCREENWIDTH-width) >> 1;
-
-    // Column offset. For windows.
-    for (i=0 ; i<width ; i++)
-        columnofs[i] = viewwindowx + i;
 
     // Samw with base row offset.
     if (width == SCREENWIDTH)
         viewwindowy = 0;
     else
         viewwindowy = (SCREENHEIGHT-SBARHEIGHT-height) >> 1;
-
-    // Preclaculate all row offsets.
-    for (i=0 ; i<height ; i++)
-        ylookup[i] = screens[0] + (i+viewwindowy)*SCREENWIDTH;
 }
 
 
