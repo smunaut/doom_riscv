@@ -38,25 +38,20 @@ typedef unsigned char byte;
 #endif
 
 
-// Predefined with some OS.
-#ifdef LINUX
-#include <values.h>
-#else
-#define MAXCHAR         ((char)0x7f)
-#define MAXSHORT        ((short)0x7fff)
+// Limits alias
+#include <limits.h>
 
-// Max pos 32-bit int.
-#define MAXINT          ((int)0x7fffffff)
-#define MAXLONG         ((long)0x7fffffff)
-#define MINCHAR         ((char)0x80)
-#define MINSHORT        ((short)0x8000)
+#define MAXCHAR         ((char)CHAR_MAX)
+#define MINCHAR         ((char)CHAR_MIN)
 
-// Max negative 32-bit integer.
-#define MININT          ((int)0x80000000)
-#define MINLONG         ((long)0x80000000)
-#endif
+#define MAXSHORT        ((short)SHRT_MAX)
+#define MINSHORT        ((short)SHRT_MIN)
 
+#define MAXINT          ((int)INT_MAX)
+#define MININT          ((int)INT_MIN)
 
+#define MAXLONG         ((long)LONG_MAX)
+#define MINLONG         ((long)LONG_MIN)
 
 
 #endif
