@@ -1,7 +1,12 @@
 CC=gcc
-CFLAGS=-g -m32 -Wall -DNORMALUNIX -DLINUX -I..
+CFLAGS=-g -m32 -Wall
 LDFLAGS=-m32 -L/usr/X11R6/lib
 LIBS=-lXext -lX11 -lm
+
+CFLAGS+=\
+	-DNORMALUNIX \
+	-DLINUX \
+	$(NULL)
 
 
 include ../sources.mk
