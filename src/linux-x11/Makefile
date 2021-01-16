@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g -m32 -Wall
+CFLAGS=-g -m32 -Wall -funsigned-char
 LDFLAGS=-m32 -L/usr/X11R6/lib
 LIBS=-lXext -lX11 -lm
 
