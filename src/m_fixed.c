@@ -72,12 +72,11 @@ FixedDiv2
 ( fixed_t       a,
   fixed_t       b )
 {
-#if 0
+#if 1
     long long c;
     c = ((long long)a<<16) / ((long long)b);
     return (fixed_t) c;
-#endif
-
+#else
     double c;
 
     c = ((double)a) / ((double)b) * FRACUNIT;
@@ -85,4 +84,5 @@ FixedDiv2
     if (c >= 2147483648.0 || c < -2147483648.0)
         I_Error("FixedDiv: divide by zero");
     return (fixed_t) c;
+#endif
 }
