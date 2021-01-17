@@ -242,7 +242,7 @@ extern  int             maxammo[NUMAMMO];
 //
 
 // File handling stuff.
-extern  char            basedefault[1024];
+extern  char            basedefault[];
 
 #ifdef DEBUG
 extern  FILE*           debugfile;
