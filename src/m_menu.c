@@ -518,10 +518,7 @@ void M_ReadSaveStrings(void)
 
     for (i = 0;i < load_end;i++)
     {
-        if (M_CheckParm("-cdrom"))
-            sprintf(name,"c:\\doomdata\\"SAVEGAMENAME"%d.dsg",i);
-        else
-            sprintf(name,SAVEGAMENAME"%d.dsg",i);
+        sprintf(name,SAVEGAMENAME"%d.dsg",i);
 
         handle = open (name, O_RDONLY | 0, 0666);
         if (handle == -1)
