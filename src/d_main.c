@@ -116,7 +116,9 @@ int             startepisode;
 int             startmap;
 boolean         autostart;
 
+#ifdef DEBUG
 FILE*           debugfile;
+#endif
 
 boolean         advancedemo;
 
@@ -358,6 +360,7 @@ void D_DoomLoop (void)
     if (demorecording)
         G_BeginRecording ();
 
+#ifdef DEBUG
     if (M_CheckParm ("-debugfile"))
     {
         char    filename[20];
@@ -365,6 +368,7 @@ void D_DoomLoop (void)
         printf ("debug output to: %s\n",filename);
         debugfile = fopen (filename,"w");
     }
+#endif
 
     I_InitGraphics ();
 
