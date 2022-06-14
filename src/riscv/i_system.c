@@ -43,6 +43,7 @@
 	/* Normally running at 70 Hz, although in 640x480 compat
 	 * mode, it's 60 Hz so our tick is 15% too slow ... */
 static volatile uint32_t * const video_state = (void*)(VID_CTRL_BASE);
+static volatile uint32_t * const btn_state   = (void*)(ESPLNK_BASE);
 
 /* Video Ticks tracking */
 static uint16_t vt_last = 0;
@@ -163,6 +164,44 @@ I_GetRemoteEvent(void)
 	}
 }
 
+static void
+I_GetLocalEvent(void)
+{
+	const char map[] = {
+		KEY_DOWNARROW,	/* RP2040_INPUT_JOYSTICK_DOWN  */
+		KEY_UPARROW,	/* RP2040_INPUT_JOYSTICK_UP    */
+		KEY_LEFTARROW,	/* RP2040_INPUT_JOYSTICK_LEFT  */
+		KEY_RIGHTARROW,	/* RP2040_INPUT_JOYSTICK_RIGHT */
+		KEY_RSHIFT,	/* RP2040_INPUT_JOYSTICK_PRESS */
+		KEY_ESCAPE,	/* RP2040_INPUT_BUTTON_HOME    */
+		KEY_ENTER,	/* RP2040_INPUT_BUTTON_MENU    */
+		KEY_EQUALS,	/* RP2040_INPUT_BUTTON_SELECT  */
+		KEY_MINUS,	/* RP2040_INPUT_BUTTON_START   */
+		KEY_RCTRL,	/* RP2040_INPUT_BUTTON_ACCEPT  */
+		' ',		/* RP2040_INPUT_BUTTON_BACK    */
+	};
+	static uint16_t btn_prev;
+	uint16_t btn_cur, btn_change, mask;
+
+	// Get state
+	btn_cur    = *btn_state & 0xffff;
+	btn_change = btn_cur ^ btn_prev;
+	btn_prev   = btn_cur;
+
+	// Generate events
+	mask = 1;
+	for (int i=0; i<11; i++)
+	{
+		if (btn_change & mask) {
+			event_t event;
+			event.type = (btn_cur & mask)  ? ev_keydown : ev_keyup;
+			event.data1 = map[i];
+			D_PostEvent(&event);
+		}
+		mask <<= 1;
+	}
+}
+
 void
 I_StartFrame(void)
 {
@@ -173,6 +212,7 @@ void
 I_StartTic(void)
 {
 	I_GetRemoteEvent();
+	I_GetLocalEvent();
 }
 
 ticcmd_t *
