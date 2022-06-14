@@ -80,7 +80,7 @@ I_GetTime(void)
 
 
 static void
-I_GetEvent(void)
+I_GetRemoteEvent(void)
 {
 	event_t event;
 
@@ -172,7 +172,7 @@ I_StartFrame(void)
 void
 I_StartTic(void)
 {
-	I_GetEvent();
+	I_GetRemoteEvent();
 }
 
 ticcmd_t *
