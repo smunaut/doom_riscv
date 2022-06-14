@@ -33,6 +33,17 @@
 #define LIBC_DEBUG
 
 
+struct wb_esplnk {
+	uint32_t csr;
+	uint32_t fid;
+	uint32_t ofs;
+	uint32_t len;
+} __attribute__((packed,aligned(4)));
+
+static volatile struct wb_esplnk * const esplnk_regs = (void*)(ESPLNK_BASE);
+static volatile uint32_t         * const esplnk_data = (void*)(ESPLNK_BASE + 0x800);
+
+
 // HEAP handling
 // -------------
 
@@ -58,9 +69,9 @@ _sbrk(intptr_t increment)
 static struct {
 	const char *name;	/* Filename */
 	size_t      len;	/* Length */
-	void *      addr;	/* Address in flash */
+	uint32_t    fid;	/* File ID */
 } fs[] = {
-	{ "doomu.wad", 12408292, (void*)0x40200000 },
+	{ "doomu.wad", 12408292, 0x958659a7 },
 	{ NULL }
 };
 
@@ -71,11 +82,11 @@ static struct {
 	enum {
 		FD_NONE  = 0,
 		FD_STDIO = 1,
-		FD_FLASH = 2,
+		FD_ESP32 = 2,
 	} type;
-	size_t offset;
-	size_t len;
-	void   *data;
+	uint32_t fid;
+	size_t   offset;
+	size_t   len;
 } fds[NUM_FDS] = {
 	[0] = {
 		.type = FD_STDIO,
@@ -111,12 +122,12 @@ _open(const char *pathname, int flags)
 	}
 
 	/* "Open" file */
-	fds[fd].type   = FD_FLASH;
+	fds[fd].type   = FD_ESP32;
 	fds[fd].offset = 0;
 	fds[fd].len    = fs[fn].len;
-	fds[fd].data   = fs[fn].addr;
+	fds[fd].fid    = fs[fn].fid;
 
-	console_printf("Opened: %s as fd=%d\n", pathname, fd);
+	console_printf("Opened: %s (fid=%08x) as fd=%d\n", pathname, fs[fn].fid, fd);
 
 	return fd;
 }
@@ -124,7 +135,10 @@ _open(const char *pathname, int flags)
 ssize_t
 _read(int fd, void *buf, size_t nbyte)
 {
-	if ((fd < 0) || (fd >= NUM_FDS) || (fds[fd].type != FD_FLASH)) {
+	uint8_t *buf_u8 = buf;
+	size_t left_len, blk_len;
+
+	if ((fd < 0) || (fd >= NUM_FDS) || (fds[fd].type != FD_ESP32)) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -132,8 +146,25 @@ _read(int fd, void *buf, size_t nbyte)
 	if ((fds[fd].offset + nbyte) > fds[fd].len)
 		nbyte = fds[fd].len - fds[fd].offset;
 
-	memcpy(buf, fds[fd].data + fds[fd].offset, nbyte);
-	fds[fd].offset += nbyte;
+	left_len = nbyte;
+	while (left_len) {
+
+		blk_len = 512;
+		if (blk_len > left_len)
+			blk_len = left_len;
+
+		esplnk_regs->fid = fds[fd].fid;
+		esplnk_regs->ofs = fds[fd].offset;
+		esplnk_regs->len = blk_len - 1;
+
+		fds[fd].offset += blk_len;
+		left_len -= blk_len;
+
+		while ((esplnk_regs->csr & 0xc0000000) != 0x80000000);
+
+		for (int i=0; i<blk_len; i++)
+			*buf_u8++ = esplnk_data[i];
+	}
 
 	return nbyte;
 }
@@ -165,7 +196,7 @@ _lseek(int fd, off_t offset, int whence)
 {
 	size_t new_offset;
 
-	if ((fd < 0) || (fd >= NUM_FDS) || (fds[fd].type != FD_FLASH)) {
+	if ((fd < 0) || (fd >= NUM_FDS) || (fds[fd].type != FD_ESP32)) {
 		errno = EINVAL;
 		return -1;
 	}
