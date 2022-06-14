@@ -36,7 +36,7 @@ SOURCES_doom_arch := \
 	$(NULL)
 
 
-all: doom-riscv.elf
+all: doom-riscv.bin
 
 doom-riscv.elf: riscv.lds $(addprefix ../,$(SOURCES_doom)) $(SOURCES_doom_arch)
 	$(CC) $(CFLAGS) -Wl,-Bstatic,-T,riscv.lds,--strip-debug -o $@ $(addprefix ../,$(SOURCES_doom)) $(SOURCES_doom_arch)
@@ -57,3 +57,4 @@ prog_wad: data/doomu.wad
 
 
 .PHONY: all clean prog prog_wad
+.PRECIOUS: *.elf
