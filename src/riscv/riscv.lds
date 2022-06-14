@@ -1,7 +1,6 @@
 MEMORY
 {
-    ROM   (xr)  : ORIGIN = 0x40100000, LENGTH = 0x100000	/* 1024k */
-    PSRAM (xrw) : ORIGIN = 0x41000000, LENGTH = 0x800000	/* 8192k */
+    PSRAM (xrw) : ORIGIN = 0x40000000, LENGTH = 0x800000	/* 8192k */
     BRAM  (xrw) : ORIGIN = 0x00000010, LENGTH = 0x03f0		/*  ~ 1k */
 }
 ENTRY(_start)
@@ -20,7 +19,7 @@ SECTIONS {
         . = ALIGN(4);
         _etext = .;
         _sidata = _etext;
-    } >ROM
+    } >PSRAM
     .data : AT ( _sidata )
     {
         . = ALIGN(4);
