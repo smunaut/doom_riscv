@@ -38,10 +38,10 @@ struct wb_esplnk {
 	uint32_t fid;
 	uint32_t ofs;
 	uint32_t len;
+	uint32_t dat;
 } __attribute__((packed,aligned(4)));
 
 static volatile struct wb_esplnk * const esplnk_regs = (void*)(ESPLNK_BASE);
-static volatile uint32_t         * const esplnk_data = (void*)(ESPLNK_BASE + 0x800);
 
 
 // HEAP handling
@@ -148,10 +148,11 @@ _read(int fd, void *buf, size_t nbyte)
 
 	left_len = nbyte;
 	while (left_len) {
-
-		blk_len = 512;
+		blk_len = 1024;
 		if (blk_len > left_len)
 			blk_len = left_len;
+
+		while ((esplnk_regs->csr & (1 << 30)));
 
 		esplnk_regs->fid = fds[fd].fid;
 		esplnk_regs->ofs = fds[fd].offset;
@@ -160,10 +161,10 @@ _read(int fd, void *buf, size_t nbyte)
 		fds[fd].offset += blk_len;
 		left_len -= blk_len;
 
-		while ((esplnk_regs->csr & 0xc0000000) != 0x80000000);
+		while (!(esplnk_regs->csr & (1 << 31)));
 
 		for (int i=0; i<blk_len; i++)
-			*buf_u8++ = esplnk_data[i];
+			*buf_u8++ = esplnk_regs->dat;
 	}
 
 	return nbyte;
