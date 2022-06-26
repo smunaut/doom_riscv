@@ -699,20 +699,20 @@ void R_ExecuteSetViewSize (void)
     centeryfrac = centery<<FRACBITS;
     projection = centerxfrac;
 
-    if (!detailshift)
-    {
+    //if (!detailshift)
+    //{
         colfunc = basecolfunc = R_DrawColumn;
         fuzzcolfunc = R_DrawFuzzColumn;
         transcolfunc = R_DrawTranslatedColumn;
         spanfunc = R_DrawSpan;
-    }
-    else
-    {
-        colfunc = basecolfunc = R_DrawColumnLow;
-        fuzzcolfunc = R_DrawFuzzColumn;
-        transcolfunc = R_DrawTranslatedColumn;
-        spanfunc = R_DrawSpanLow;
-    }
+    //}
+    //else
+    //{
+    //    colfunc = basecolfunc = R_DrawColumnLow;
+    //    fuzzcolfunc = R_DrawFuzzColumn;
+    //    transcolfunc = R_DrawTranslatedColumn;
+    //    spanfunc = R_DrawSpanLow;
+    //}
 
     R_InitBuffer (scaledviewwidth, viewheight);
 
@@ -774,6 +774,8 @@ void R_Init (void)
 {
     R_InitData ();
     printf ("\nR_InitData");
+    R_InitSpanRecords ();
+    printf ("\nR_InitSpanRecords");
     R_InitPointToAngle ();
     printf ("\nR_InitPointToAngle");
     R_InitTables ();
@@ -869,6 +871,8 @@ void R_SetupFrame (player_t* player)
 //
 void R_RenderPlayerView (player_t* player)
 {
+    R_ClearSpanRecords();
+
     R_SetupFrame (player);
 
     // Clear buffers.
@@ -895,4 +899,14 @@ void R_RenderPlayerView (player_t* player)
 
     // Check for new console commands.
     NetUpdate ();
+
+    ////// TEST
+    for (int x=0;x<SCREENWIDTH;++x) {
+        printf("Column %3d\n",x);
+        t_spanrecord *cur = dc_spanrecords[x];
+        while (cur) {
+            printf(" - wall span %3d->%3d, texid %3d\n",cur->yl,cur->yh,cur->texid);
+            cur = cur->next;
+        }
+    }
 }

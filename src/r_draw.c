@@ -90,8 +90,60 @@ fixed_t                 dc_texturemid;
 // first pixel in a column (possibly virtual)
 byte*                   dc_source;
 
+// texture id of column being drawn
+int                     dc_texid;
+
 // just for profiling
 int                     dccount;
+
+t_spanrecord          **dc_spanrecords;
+#define SPANRECORDS_POOL_SIZE 320*30 // ought to be enough
+t_spanrecord           *dc_spanrecords_pool;
+int                     dc_next_free_spanrecord;
+
+
+//
+// R_ClearSpanRecords
+// Creates the array of span records
+// used to generate draw calls for the GPU
+//
+void R_ClearSpanRecords(void)
+{
+    // fast clear
+    memset(dc_spanrecords, 0x00, sizeof(t_spanrecord*)*SCREENWIDTH);
+    dc_next_free_spanrecord = 0;
+}
+
+//
+// R_InitSpanRecords
+// Creates the array of span records
+// used to generate draw calls for the GPU
+//
+void R_InitSpanRecords(void)
+{
+    dc_spanrecords = Z_Malloc ( sizeof(t_spanrecord*)*SCREENWIDTH , PU_STATIC, 0);
+    dc_spanrecords_pool = Z_Malloc ( sizeof(t_spanrecord)*SPANRECORDS_POOL_SIZE , PU_STATIC, 0);
+    R_ClearSpanRecords();
+}
+
+//
+// R_AddSpanRecord
+// Add a span record to the column
+// No allocation performed, relies
+// on a pre-allocated pool of records
+//
+t_spanrecord *R_AddSpanRecord(int col)
+{
+    t_spanrecord *new = dc_spanrecords_pool + dc_next_free_spanrecord;
+    ++ dc_next_free_spanrecord;
+    if (dc_next_free_spanrecord == SPANRECORDS_POOL_SIZE) {
+        // need more! simply fail for now, could realloc ...
+        I_Error ("No more span records.");
+    }
+    new->next = dc_spanrecords[col];
+    dc_spanrecords[col] = new;
+    return new;
+}
 
 //
 // A column is a vertical slice/span from a wall texture that,
@@ -119,6 +171,12 @@ void R_DrawColumn (void)
         || dc_yh >= SCREENHEIGHT)
         I_Error ("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
 #endif
+
+    // Add span record for the GPU (TEST: move to a different R_DrawColumn and set colfunc)
+    t_spanrecord *rec = R_AddSpanRecord(dc_x);
+    rec->yl = dc_yl;
+    rec->yh = dc_yh;
+    rec->texid = dc_texid;
 
     // Framebuffer destination address.
     dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
@@ -382,8 +440,6 @@ void R_DrawTranslatedColumn (void)
         frac += fracstep;
     } while (count--);
 }
-
-
 
 
 //

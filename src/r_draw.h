@@ -39,7 +39,24 @@ extern fixed_t          dc_texturemid;
 
 // first pixel in a column
 extern byte*            dc_source;
+extern int              dc_texid;
 
+//
+// Span record
+//
+typedef struct s_spanrecord {
+  int           yl;
+  int           yh;
+  short         texid;
+  struct s_spanrecord *next;
+} t_spanrecord;
+
+extern t_spanrecord **dc_spanrecords;
+
+// Span records for the GPU
+void          R_ClearSpanRecords(void);
+void          R_InitSpanRecords(void);
+t_spanrecord *R_AddSpanRecord(int col);
 
 // The span blitting interface.
 // Hook in assembler or system specific BLT

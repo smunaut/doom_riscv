@@ -567,6 +567,21 @@ void R_InitTextures (void)
 
     for (i=0 ; i<numtextures ; i++)
         texturetranslation[i] = i;
+
+    // output name <-> id
+    {
+        FILE *f;
+        f = fopen("textures.nfo","w");
+        fprintf(f,"%3d\n",numtextures);
+        for (i=0 ; i<numtextures ; i++) {
+            char tmp[9];
+            tmp[8]='\0';
+            memcpy(tmp,textures[i]->name,8);
+            fprintf(f,"%3d %s\n",i,tmp);
+        }
+        fclose(f);
+    }
+
 }
 
 
@@ -716,7 +731,6 @@ int     R_TextureNumForName (char* name)
     int         i;
 
     i = R_CheckTextureNumForName (name);
-
     if (i==-1)
     {
         I_Error ("R_TextureNumForName: %s not found",
