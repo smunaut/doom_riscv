@@ -113,9 +113,9 @@ angle_t                 xtoviewangle[SCREENWIDTH+1];
 fixed_t*                finecosine = &finesine[FINEANGLES/4];
 
 
-lighttable_t*           scalelight[LIGHTLEVELS][MAXLIGHTSCALE];
-lighttable_t*           scalelightfixed[MAXLIGHTSCALE];
-lighttable_t*           zlight[LIGHTLEVELS][MAXLIGHTZ];
+lighttable_t*           scalelight[LIGHTLEVELS][MAXLIGHTSCALE] __attribute__((aligned(64)));
+lighttable_t*           scalelightfixed[MAXLIGHTSCALE] __attribute__((aligned(64)));
+lighttable_t*           zlight[LIGHTLEVELS][MAXLIGHTZ] __attribute__((aligned(64)));
 
 // bumped light from gun blasts
 int                     extralight;
