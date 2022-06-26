@@ -91,7 +91,11 @@ fixed_t                 dc_texturemid;
 byte*                   dc_source;
 
 // texture id of column being drawn
-int                     dc_texid;
+short                   dc_texid;
+// texture column coordinate being drawn
+int                     dc_u;
+// lighting level of column being drawn
+byte                    dc_light;
 
 // just for profiling
 int                     dccount;
@@ -172,12 +176,6 @@ void R_DrawColumn (void)
         I_Error ("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
 #endif
 
-    // Add span record for the GPU (TEST: move to a different R_DrawColumn and set colfunc)
-    t_spanrecord *rec = R_AddSpanRecord(dc_x);
-    rec->yl = dc_yl;
-    rec->yh = dc_yh;
-    rec->texid = dc_texid;
-
     // Framebuffer destination address.
     dest = screens[0] + (viewwindowy + dc_yl) * SCREENWIDTH + (viewwindowx + dc_x);
 
@@ -185,6 +183,16 @@ void R_DrawColumn (void)
     //  which is the only mapping to be done.
     fracstep = dc_iscale;
     frac = dc_texturemid + (dc_yl-centery)*fracstep;
+
+    // Add span record for the GPU (TEST: move to a different R_DrawColumn and set colfunc)
+    t_spanrecord *rec = R_AddSpanRecord(dc_x);
+    rec->yl    = dc_yl;
+    rec->yh    = dc_yh;
+    rec->texid = dc_texid;
+    rec->vstep = fracstep >> 7;
+    rec->vinit = frac >> 11;
+    rec->u     = dc_u;
+    rec->light = 15; // dc_light;
 
     // Inner loop that does the actual texture mapping,
     //  e.g. a DDA-lile scaling.

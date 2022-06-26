@@ -36,18 +36,24 @@ extern int              dc_yl;
 extern int              dc_yh;
 extern fixed_t          dc_iscale;
 extern fixed_t          dc_texturemid;
+extern short            dc_texid;
+extern int              dc_u;
+extern byte             dc_light;
 
 // first pixel in a column
 extern byte*            dc_source;
-extern int              dc_texid;
 
 //
 // Span record
 //
 typedef struct s_spanrecord {
-  int           yl;
-  int           yh;
-  short         texid;
+  short  yl;
+  short  yh;
+  short  texid;
+  int    vstep;
+  short  vinit;
+  short  u;
+  byte   light;
   struct s_spanrecord *next;
 } t_spanrecord;
 

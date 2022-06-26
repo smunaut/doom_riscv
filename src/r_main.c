@@ -31,6 +31,7 @@ rcsid[] = "$Id: r_main.c,v 1.5 1997/02/03 22:45:12 b1 Exp $";
 #include <stdlib.h>
 #include <math.h>
 
+#include "i_system.h"
 
 #include "doomdef.h"
 #include "d_net.h"
@@ -40,6 +41,7 @@ rcsid[] = "$Id: r_main.c,v 1.5 1997/02/03 22:45:12 b1 Exp $";
 #include "r_local.h"
 #include "r_sky.h"
 
+#include "r_gpu.h"
 
 
 
@@ -901,12 +903,42 @@ void R_RenderPlayerView (player_t* player)
     NetUpdate ();
 
     ////// TEST
-    for (int x=0;x<SCREENWIDTH;++x) {
-        printf("Column %3d\n",x);
-        t_spanrecord *cur = dc_spanrecords[x];
-        while (cur) {
-            printf(" - wall span %3d->%3d, texid %3d\n",cur->yl,cur->yh,cur->texid);
-            cur = cur->next;
+    {
+        static int count = 0;
+        FILE *f = fopen("frame.nfo","w");
+        if (!f) {
+            I_Error("Could not open output draw command file\n");
+        }
+        for (int x=0;x<SCREENWIDTH;++x) {
+            printf("Column %3d\n",x);
+            t_spanrecord *cur = dc_spanrecords[x];
+            while (cur) {
+                printf("cur->vstep %d,cur->vinit %d,cur->u %d,",cur->vstep,cur->vinit,cur->u);
+                printf("cur->texid %d,cur->yl %d,cur->yh %d,cur->light %d\n",cur->texid,cur->yl,cur->yh, cur->light);
+                unsigned int dc0 = COLDRAW_WALL(cur->vstep,cur->vinit,cur->u);
+                unsigned int dc1 = COLDRAW_COL(cur->texid,cur->yl,cur->yh, cur->light) | WALL;
+                fprintf(f,"0,"); // timestamp, can ignore
+                fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,",  (dc0>>24)&255,(dc0>>16)&255,(dc0>>8)&255,(dc0)&255);
+                fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,\n",(dc1>>24)&255,(dc1>>16)&255,(dc1>>8)&255,(dc1)&255);
+                cur = cur->next;                
+            }
+            unsigned int dc0,dc1;
+            // filler (should not be necessary in the end, helps debug on partial renders)
+            dc0 = COLDRAW_WALL(MAX_DEPTH,0,0);
+            dc1 = COLDRAW_COL(0, 0, 199, 15) | WALL;
+            fprintf(f,"0,");
+            fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,",  (dc0>>24)&255,(dc0>>16)&255,(dc0>>8)&255,(dc0)&255);
+            fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,\n",(dc1>>24)&255,(dc1>>16)&255,(dc1>>8)&255,(dc1)&255);      
+            // column done
+            dc0 = 0;
+            dc1 = COLDRAW_EOC;
+            fprintf(f,"0,");
+            fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,",  (dc0>>24)&255,(dc0>>16)&255,(dc0>>8)&255,(dc0)&255);
+            fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,\n",(dc1>>24)&255,(dc1>>16)&255,(dc1>>8)&255,(dc1)&255);
+        }       
+        fclose(f);
+        if (++count == 16) {
+            I_Error("stopping here for now");
         }
     }
 }
