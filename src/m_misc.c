@@ -60,6 +60,9 @@ rcsid[] = "$Id: m_misc.c,v 1.6 1997/02/03 22:45:10 b1 Exp $";
 // Data.
 #include "dstrings.h"
 
+#include "r_draw.h"
+#include "r_gpu.h"
+
 #include "m_misc.h"
 
 //
@@ -503,8 +506,19 @@ WritePCXfile
 //
 // M_ScreenShot
 //
+
+static void
+cmd_out(FILE *f, unsigned int dc0, unsigned int dc1)
+{
+    fprintf(f,"0,");
+    fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,",  (dc0>>24)&255,(dc0>>16)&255,(dc0>>8)&255,(dc0)&255);
+    fprintf(f,"0x%02x,0x%02x,0x%02x,0x%02x,\n",(dc1>>24)&255,(dc1>>16)&255,(dc1>>8)&255,(dc1)&255);
+}
+
+
 void M_ScreenShot (void)
 {
+#if 0
     int         i;
     byte*       linear;
     char        lbmname[12];
@@ -531,6 +545,39 @@ void M_ScreenShot (void)
     WritePCXfile (lbmname, linear,
                   SCREENWIDTH, SCREENHEIGHT,
                   W_CacheLumpName ("PLAYPAL",PU_CACHE));
+#else
+    ////// TEST
+    {
+        FILE *f = fopen("frame.nfo","w");
+        if (!f) {
+            I_Error("Could not open output draw command file\n");
+        }
+        for (int x=0;x<SCREENWIDTH;++x) {
+            printf("Column %3d\n",x);
+            t_spanrecord *cur = dc_spanrecords[x];
+            while (cur) {
+                printf("cur->vstep %d,cur->vinit %d,cur->u %d,",cur->vstep,cur->vinit,cur->u);
+                printf("cur->texid %d,cur->yl %d,cur->yh %d,cur->light %d\n",cur->texid,cur->yl,cur->yh, cur->light);
+                cmd_out(f,
+                    COLDRAW_WALL(cur->vstep,cur->vinit,cur->u),
+                    COLDRAW_COL(cur->texid,cur->yl,cur->yh, cur->light) | WALL
+                );
+                cur = cur->next;
+            }
+            // filler (should not be necessary in the end, helps debug on partial renders)
+            cmd_out(f,
+                COLDRAW_WALL(MAX_DEPTH,0,0),
+                COLDRAW_COL(0, 0, 240, 15) | WALL
+            );
+            // column done
+            cmd_out(f,
+                0,
+                COLDRAW_EOC
+            );
+        }
+        fclose(f);
+    }
+#endif
 
     players[consoleplayer].message = "screen shot";
 }
