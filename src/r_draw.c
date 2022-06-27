@@ -188,9 +188,9 @@ void R_DrawColumn (void)
     t_spanrecord *rec = R_AddSpanRecord(dc_x);
     rec->yl    = dc_yl;
     rec->yh    = dc_yh;
-    rec->texid = dc_texid;
-    rec->vstep = fracstep >> 7;
-    rec->vinit = frac >> 11;
+    rec->texid = 1 + dc_texid;
+    rec->vstep = fracstep >> 5;
+    rec->vinit = (frac >> 16);
     rec->u     = dc_u;
     rec->light = 15; // dc_light;
 
