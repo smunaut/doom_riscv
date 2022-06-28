@@ -186,11 +186,18 @@ void R_DrawColumn (void)
 
     // Add span record for the GPU (TEST: move to a different R_DrawColumn and set colfunc)
     t_spanrecord *rec = R_AddSpanRecord(dc_x);
+#if 0
+    rec->yl    = (( dc_yl      * 6) + 2) / 5;
+    rec->yh    = (((dc_yh + 1) * 6) + 2) / 5;
+    rec->vstep = ((((fracstep * 5) + 3) / 6) + 16) >> 5;
+    rec->vinit = (frac >> 16);
+#else
     rec->yl    = dc_yl;
     rec->yh    = dc_yh;
-    rec->texid = 1 + dc_texid;
     rec->vstep = fracstep >> 5;
     rec->vinit = (frac >> 16);
+#endif
+    rec->texid = 1 + dc_texid;
     rec->u     = dc_u;
     rec->light = 15; // dc_light;
 
