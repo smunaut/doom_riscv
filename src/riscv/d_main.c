@@ -524,37 +524,52 @@ void D_AddFile (char *file)
 //
 // IdentifyVersion
 //
+static int
+_check_wad(const char *fname)
+{
+    FILE *f;
+    char buf[4];
+
+    /* Read header */
+    f = fopen(fname, "rb");
+    fread(buf, 4, 1, f);
+    fclose(f);
+
+    /* Check */
+    return !memcmp("IWAD", buf, 4);
+}
+
 void IdentifyVersion (void)
 {
     devparm = false;
 
     // Manually select how to start
-#if 0
-    gamemode = commercial;
-    language = french;
-    D_AddFile ("doom2f.wad");
-#elif 0
-    gamemode = commercial;
-    D_AddFile ("doom2.wad");
-#elif 0
-    gamemode = commercial;
-    D_AddFile ("plutonia.wad");
-#elif 0
-    gamemode = commercial;
-    D_AddFile ("tnt.wad");
-#elif 1
-    gamemode = retail;
-    D_AddFile ("doomu.wad");
-#elif 0
-    gamemode = registered;
-    D_AddFile ("doom.wad");
-#elif 0
-    gamemode = shareware;
-    D_AddFile ("doom1.wad");
-#else
-    printf("Game mode indeterminate.\n");
-    gamemode = indetermined;
-#endif
+    if (_check_wad("doom2f.wad")) {
+        gamemode = commercial;
+        language = french;
+        D_AddFile ("doom2f.wad");
+    } else if (_check_wad("doom2.wad")) {
+        gamemode = commercial;
+        D_AddFile ("doom2.wad");
+    } else if (_check_wad("plutonia.wad")) {
+        gamemode = commercial;
+        D_AddFile ("plutonia.wad");
+    } else if (_check_wad("tnt.wad")) {
+        gamemode = commercial;
+        D_AddFile ("tnt.wad");
+    } else if (_check_wad("doomu.wad")) {
+        gamemode = retail;
+        D_AddFile ("doomu.wad");
+    } else if (_check_wad("doom.wad")) {
+        gamemode = registered;
+        D_AddFile ("doom.wad");
+    } else if (_check_wad("doom1.wad")) {
+        gamemode = shareware;
+        D_AddFile ("doom1.wad");
+    } else {
+        printf("Game mode indeterminate.\n");
+        gamemode = indetermined;
+    }
 }
 
 

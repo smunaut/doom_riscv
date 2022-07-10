@@ -71,7 +71,13 @@ static struct {
 	size_t      len;	/* Length */
 	uint32_t    fid;	/* File ID */
 } fs[] = {
-	{ "doomu.wad", 12408292, 0x958659a7 },
+	{ "doom2f.wad",   14607420, 0x2b369a12 },
+	{ "doom2.wad",    14604584, 0x688e7a64 },
+	{ "plutonia.wad", 17420824, 0xb14d0ca7 },
+	{ "tnt.wad",      18195736, 0x788defa8 },
+	{ "doomu.wad",    12408292, 0x958659a7 },
+	{ "doom.wad",     11159840, 0x1d5c5bb7 },
+	{ "doom1.wad",     4196020, 0x01c4546d },
 	{ NULL }
 };
 
